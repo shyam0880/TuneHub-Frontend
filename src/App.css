@@ -1,0 +1,249 @@
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+a {
+	text-decoration: none;
+	color: white;
+}
+
+body {
+	background: #0b1320;
+	font-family: 'Montserrat', sans-serif;
+	height: 100vh;
+	width: 100%;
+	overflow: hidden;
+}
+
+.overlay button {
+	border-radius: 20px;
+	border: 2px solid #642bff;
+	background: #0b1320;
+	color: #FFFFFF;
+    margin-right: 30px;
+	font-size: 18px;
+	font-weight: bold;
+	padding: 12px 45px;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	transition: transform 80ms ease-in;
+}
+
+.overlay button:active {
+	transform: scale(0.95);
+	background: #2b40ff;
+}
+
+.overlay {
+	background-repeat: no-repeat;
+  	transform: translateX(0);
+    padding: 20px;
+	transition: transform 0.6s ease-in-out;
+}
+
+.home{
+	height: 100vh;
+	width: 100%;
+	color: white;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-around;
+}
+
+.home1 h1{
+	font-size: 60px;
+	padding: 10px;
+}
+
+.home1 p{
+	padding: 0 30px;
+	font-size: large;
+	text-align: justify;
+	font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	color: #d4d7d6;
+}
+
+.home1 span{
+	color: #2b40ff;
+}
+
+
+.home2 img{
+	width: 30rem;
+	height: 30rem;
+	transition: transform 0.6s ease-in-out;
+
+}
+
+/* Login page */
+
+.container{
+	background: rgba(247, 247, 247, 0.05);
+	border: 2px solid rgba(54, 85, 243, 0.2);
+	border-radius: 10px;
+	width: 30rem;
+	padding: 20px;
+}
+
+.form_container{
+	height: 100%;
+	width: 100%;
+}
+
+.form_container h1{
+	margin: 10px;
+}
+
+.form_container form{
+	height: 100%;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	padding: 10px;
+	overflow: auto;
+}
+
+.form_container input{
+	width: 100%;
+	height: 2.5rem;
+	margin: 20px 0;
+	padding: 0 10px;
+	border: 2px solid #642bff;
+	border-radius: 10px;
+	background: none;
+	color: whitesmoke;
+	font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.submit_btn{
+	margin: 30px 0;
+	width: 100%;
+	display: flex;
+	justify-content: flex-end;
+}
+
+.submit_btn button{
+	border-radius: 25px;
+	border: 2px solid #642bff;
+	background: none;
+	color: #FFFFFF;
+	font-weight: bold;
+	padding: 12px 45px;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	transition: transform 80ms ease-in;
+}
+
+.radio {
+	margin-bottom: 15px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	font-family: Arial, sans-serif;
+	font-size: 16px;
+  }
+  
+ 
+  .radio input[type="radio"] {
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	width: 10px;
+	height: 22px;
+	border: 2px solid #007bff;
+	border-radius: 50%;
+	margin: 5px 10px;
+	cursor: pointer;
+	position: relative;
+	transition: all 0.3s ease;
+  }
+  
+  .radio input[type="radio"]:checked {
+	background-color: #007bff;
+	border-color: #0056b3;
+  }
+  
+  .radio input[type="radio"]::before {
+	content: "";
+	width: 10px;
+	height: 10px;
+	background: white;
+	border-radius: 50%;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%) scale(0);
+	transition: all 0.2s ease-in-out;
+  }
+  
+  .radio input[type="radio"]:checked::before {
+	transform: translate(-50%, -50%) scale(1);
+  }
+  
+  .radio label,
+  .radio input {
+	cursor: pointer;
+  }
+  
+  .radio input + span {
+	margin-right: 15px;
+  }
+
+  .signup_btn button{
+	border-radius: 25px;
+	border: 2px solid #642bff;
+	background: none;
+	color: #FFFFFF;
+	font-weight: bold;
+	padding: 12px 45px;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	transition: transform 80ms ease-in;
+}
+
+.signup_btn{
+	width: 100%;
+	display: flex;
+	justify-content: flex-end;
+}
+
+.overlay .active {
+	background: #642bff;
+}
+
+
+/* popup add */
+
+header .popup{
+	height: 100vh;
+	width: 100vw;
+	top: 0;
+	left:0;
+	position: fixed;
+	background: rgba(49,49,49,0.8);
+	backdrop-filter: blur(5px);
+	z-index: 9;
+	color: white;
+	width: 100%;
+	top:50%;
+	left: 50%;
+	translate: -50% -50%;
+}
+
+
+  header .popup .contant .bi{
+	position: relative;
+	left: 97%;
+	font-size: 30px;
+	font-weight: bolder;
+	color: #a4a8b4;
+	cursor: pointer;
+	transition: .3 linear;
+  }
+
+  header .popup .contant .bi:hover{
+	color: #fff;
+  }
