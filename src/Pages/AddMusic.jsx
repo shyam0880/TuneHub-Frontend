@@ -1,8 +1,10 @@
-import React,{useState} from 'react';
+import React,{useEffect, useState, useContext} from 'react';
 import '../CSS/addsong.css';
+import AuthContext from '../AutherContext/AuthContext';
 
 const AddMusic = () => {
     const [errMessage,setErrMessage] = useState();
+    const [ messageStatus, setMessageStatus] = useState(false);
     const [song, setSong] = useState({
         name: "",
         artist: "",
@@ -10,6 +12,7 @@ const AddMusic = () => {
         link: "",
         imgLink: "",
       });
+      const { fetchSongs } = useContext(AuthContext);
     
       const handleChange = (e) => {
         const {name,value} = e.target;
@@ -33,15 +36,26 @@ const AddMusic = () => {
           const result = await response.text(); // Get response from backend
     
           if (response.ok) {
+            setMessageStatus(true);
             setErrMessage(result)
-            setSong({ name: "", artist: "", genre: "", link: "", imgLink: "" }); // Clear form
+            setSong({ name: "", artist: "", genre: "", link: "", imgLink: "" }); 
+            fetchSongs();
           } else {
+            setMessageStatus(false);
             setErrMessage("Failed to add song: " + result);
           }
         } catch (error) {
+          setMessageStatus(false);
           setErrMessage("Error: " + error.message);
         }
       };
+      useEffect(()=>{
+        setTimeout(()=>{
+          setErrMessage(" ")
+        },3000)
+
+      },[errMessage]);
+
     
   return (
     <form onSubmit={handleSubmit} className="song_form">
@@ -73,7 +87,7 @@ const AddMusic = () => {
     </div>
 
     <button type="submit" className="btn btn-primary">ADD SONG</button>
-    {errMessage && <p style={{color:"red"}}>{errMessage}</p>}
+    {errMessage && <p style={{ color: messageStatus ? "green" : "red",fontSize: "20px" }}>{errMessage}</p>}
   </form>
   )
 }
