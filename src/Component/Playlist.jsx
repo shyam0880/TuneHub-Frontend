@@ -10,7 +10,11 @@ const Playlist = ({ currSong, onSongSelect, checkPlay }) => {
   const [playlistImageLink, setPlaylistImageLink] = useState(""); 
   const [selectedSongs, setSelectedSongs] = useState(new Map());
   const [currentPlaylist, setCurrentPlaylist] = useState(null);
+  const [playlistSongs, setPlaylistSongs] = useState();
   const [hidePlaylist, setHidePlaylist] = useState(true);
+  const [playlistErrorMessage, setPlaylistErrorMessage] = useState("");
+  const [ messageStatus, setMessageStatus] = useState(false);
+  const [popUp, setPopUp] = useState(false);
   
 
   const handleCheckboxChange = (song) => {
@@ -50,6 +54,21 @@ const Playlist = ({ currSong, onSongSelect, checkPlay }) => {
     fetchPlaylist();
   },[])
 
+  const fetchPlaylistById =async(id)=>{
+    try{
+      const respnse  = await fetch(`http://localhost:8080/users/${id}`);
+      if(respnse.ok){
+        const data = await respnse.json();
+        setPlaylistSongs(data);
+      }
+
+    }
+    catch(err){
+      alert(err);
+    }
+
+  }
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!playlistName.trim() || !playlistType.trim() || selectedSongs.size === 0 || !playlistImageLink.trim()) {
@@ -60,7 +79,7 @@ const Playlist = ({ currSong, onSongSelect, checkPlay }) => {
     const payload = {
       name: playlistName,
       type: playlistType,
-      image: playlistImageLink,
+      imgLink: playlistImageLink,
       songs: Array.from(selectedSongs.values()),
     };
 
@@ -80,8 +99,11 @@ const Playlist = ({ currSong, onSongSelect, checkPlay }) => {
         setPlaylistType("");
         setPlaylistImageLink(""); 
         setSelectedSongs(new Map());
+        setMessageStatus(true);
+        setPlaylistErrorMessage("Playlist Added successfully");
       } else {
-        alert("Failed to add playlist.");
+        setMessageStatus(false);
+        setPlaylistErrorMessage("Failed to add playlist.");
       }
     } catch (error) {
       console.error("Error submitting playlist:", error);
@@ -100,6 +122,12 @@ const Playlist = ({ currSong, onSongSelect, checkPlay }) => {
       alert('Playlist not found');
     }
   };
+
+  useEffect(()=>{
+      setTimeout(()=>{
+        setPlaylistErrorMessage(" ")
+      },3000)
+    },[playlistErrorMessage]);
 
 
   
@@ -156,6 +184,7 @@ const Playlist = ({ currSong, onSongSelect, checkPlay }) => {
           </div>
           ):(
             <div className="playlist_song" >
+                {/* {playlistSongs.length > 0 ? (    in case we extract song fetch by id */}
                 {currentPlaylist.songs.length > 0 ? (
                   currentPlaylist.songs.map((song,index) => (
                     <li key={song.id} className="songItem">
@@ -179,48 +208,70 @@ const Playlist = ({ currSong, onSongSelect, checkPlay }) => {
           </>
         ):(
           <div className="playbox">
-            <div className="playlist_song" >
               <form onSubmit={handleSubmit}>
-              <label>Playlist Name: </label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={playlistName}
-                    onChange={(e) => setPlaylistName(e.target.value)}
-                  />
-                  <br />
+                {popUp&&(<div className="inputdata">
+                  <div className="actualdata">
+                  <i class="bi bi-arrow-left-square" onClick={()=>setPopUp(false)}></i>
+                    <label class="text">Playlist Name: </label>
+                        <input
+                          type="text"
+                          class="input"
+                          name="name"
+                          placeholder="Enter Playlist Name"
+                          value={playlistName}
+                          onChange={(e) => setPlaylistName(e.target.value)}
+                        />
+                        <br />
 
-                  <label>Playlist Type: </label>
-                  <input
-                    type="text"
-                    name="type"
-                    value={playlistType}
-                    onChange={(e) => setPlaylistType(e.target.value)}
-                  />
-                  <br />
+                        <label class="text">Playlist Type: </label>
+                        <input
+                          type="text"
+                          name="type"
+                          class="input"
+                          placeholder="Enter Playlist type"
+                          value={playlistType}
+                          onChange={(e) => setPlaylistType(e.target.value)}
+                        />
+                        <br />
 
-                  <label>Playlist Image Link: </label>
-                  <input
-                    type="text"
-                    name="imgLink"
-                    value={playlistImageLink}
-                    onChange={(e) => setPlaylistImageLink(e.target.value)}
-                    placeholder="Enter Image URL"
-                  />
-                  <br />
-                <input type="submit" value="ADD PLAYLIST"/>
-                <br/>
+                        <label class="text">Playlist Image Link: </label>
+                        <input
+                          type="text"
+                          name="imgLink"
+                          class="input"
+                          value={playlistImageLink}
+                          onChange={(e) => setPlaylistImageLink(e.target.value)}
+                          placeholder="Enter Image URL"
+                        />
+                        <br />
+                      <input type="submit" value="ADD PLAYLIST"/>
+                      <br/>
+                      {playlistErrorMessage && <p style={{ color: messageStatus ? "green" : "red",fontSize: "20px" }}>{playlistErrorMessage}</p>}
+                  </div>
+                </div>)}
+                
                 <div className="playlistSongs">
                     {songs.length>0?
                     (songs.map((song) => (
                     <li key={song.id} className="songItem">
-                      <input 
+                      <label>
+                        <input type="checkbox" 
+                        name="songs"
+                        className='checkbox' 
+                        value={song.id}
+                        checked={selectedSongs.has(song.id)}
+                        onChange={() => handleCheckboxChange(song)}
+                        />
+                        <div class="checkmark"></div>
+                      </label>
+                      {/* <input 
                       type="checkbox"  
-                      name="songs" 
+                      name="songs"
+                      className='checkbox' 
                       value={song.id}
                       checked={selectedSongs.has(song.id)}
                       onChange={() => handleCheckboxChange(song)}
-                      />
+                      /> */}
                       <div className={`img_play ${selectedSongs.has(song.id) ? "img_shadow" : ""}`}>
                         <img src={song.imgLink} alt={song.name} />
                       </div>
@@ -235,12 +286,15 @@ const Playlist = ({ currSong, onSongSelect, checkPlay }) => {
                     }
                 </div>
               </form>
-            </div>
           </div>
         )}
 		  </div>
       <div className="createplaylist">
-        <i className={addStatus?"bi bi-plus-circle":"bi bi-x-circle"} onClick={()=>setAddStatus(!addStatus)} alt="Create Playlist"></i> 
+      {selectedSongs.size>0 &&(<i class="bi bi-folder-plus" onClick={()=>setPopUp(true)}></i>)}
+        <div className='Btn'  onClick={()=>setAddStatus(!addStatus)} alt="Create Playlist">
+          <div class="sign"><i className={addStatus?"bi bi-plus":"bi-arrow-left-short"}></i></div>
+          <div class="text">{addStatus?"Create":"Back"}</div>
+        </div>
       </div>
 		</div>
   )

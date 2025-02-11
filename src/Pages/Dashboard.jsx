@@ -3,7 +3,7 @@ import AuthContext from '../AutherContext/AuthContext';
 import { useNavigate } from "react-router-dom";
 import '../CSS/displaytable.css';
 
-import AddMusic from './AddMusic';
+import AddMusic from '../Component/AddMusic';
 import Playlist from '../Component/Playlist';
 
 
@@ -376,6 +376,7 @@ const Dashboard = () => {
 			}
 			onClick={togglePlaybackMode}
 			></i>
+			<i class="bi bi-heart"></i><i class="bi bi-heart-fill"></i>
 		</div>
 	</div>
 </header>
