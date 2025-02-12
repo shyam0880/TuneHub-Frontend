@@ -54,3 +54,32 @@
   transition: transform 80ms ease-in;
 }
   
+
+
+.imageClass{
+  display: inline-block;
+  width: 50%;
+  background-color: #642bff;
+  color: #FFFFFF;
+  font-size: 14px;
+  padding: 10px 12px;
+  margin: 10px auto;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: row;
+  cursor: pointer;
+}
+
+.imageClass:hover{
+  background-color: #0056b3;
+}
+
+.song_form .up{
+  color: white;
+  font-size: 17px;
+  margin: 0 10px;
+}
+
+.song_form input[type="file"] {
+  display: none;
+}

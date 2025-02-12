@@ -32,6 +32,7 @@ const Dashboard = () => {
         link: "https://github.com/shyam0880/Tunehub/raw/main/Songs%20File/Habibi.mp3",
         name: "Habibi",
         imgLink: "https://shorturl.at/7YPQR",
+		likeSong: false,
     });
 
     const [currentTime, setCurrentTime] = useState(0);
@@ -42,7 +43,7 @@ const Dashboard = () => {
 	const [prevId,setPrevId] = useState(0);
 
 	const [playbackMode, setPlaybackMode] = useState("normal"); 
-// Modes: "normal", "autoPlay", "repeat"
+	// Modes: "normal", "autoPlay", "repeat"
 
 	const togglePlaybackMode = () => {
 		setPlaybackMode((prevMode) => {
@@ -267,7 +268,9 @@ const Dashboard = () => {
 							{song.name} <br />
 							<div className="subtitle">{song.artist}</div>
 						</h5>
+						<div className="options">
 							<i className={((currentSong.id===song.id)&& isPlaying)?("bi bi-pause-circle-fill"):("bi bi-play-circle-fill")} onClick={() =>handlePlaylistSong(recentSong,index)}></i>
+						</div>
 						</li>
 				)
 					)):(

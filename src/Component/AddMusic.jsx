@@ -142,14 +142,20 @@ const AddMusic = () => {
 
     <div className="form-group">
       <label>Song Link:</label>
-      {/* <input type="text" name="link" value={song.link} onChange={handleChange} required /> */}
-      <input type="file" accept="audio/*" onChange={(e) => setMusicFile(e.target.files[0])} required />
+      <label className="imageClass" for="songID">
+        <i class="up bi-upload"></i>
+        {musicFile ? musicFile.name : "Upload Song"}
+      </label>
+      <input type="file" id="songID" accept="audio/*" onChange={(e) => setMusicFile(e.target.files[0])} required />
     </div>
 
     <div className="form-group">
-      <label>Image Link:</label>
-      {/* <input type="text" name="imgLink" value={song.imgLink} onChange={handleChange} required /> */}
-      <input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files[0])} required />
+      <label>Image:</label>
+      <label className="imageClass" for="imageID">
+        <i class="up bi-upload"></i>
+        {imageFile ? imageFile.name : "Upload Image"}
+      </label>
+      <input type="file" id="imageID" accept="image/*" onChange={(e) => setImageFile(e.target.files[0])} required />
     </div>
 
     <button type="submit" className="btn btn-primary">ADD SONG</button>

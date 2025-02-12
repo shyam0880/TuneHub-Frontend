@@ -659,6 +659,7 @@ header .song_side .popular_song .pop_song{
 	white-space: nowrap;
 }
 
+
 header .song_side .popular_song .pop_song::-webkit-scrollbar{
 	display: none;
 }
@@ -668,6 +669,7 @@ header .song_side::-webkit-scrollbar{
 }
 
 header .song_side .popular_song .pop_song li{
+	position: relative;
 	width: 270px;
 	height: 150px;
 	list-style-type: none;
@@ -693,16 +695,34 @@ header .song_side .popular_song .pop_song li .img_play img{
 	object-fit:cover;
 }
 
+header .song_side .popular_song .pop_song .options{
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+	bottom:2%;
+	right: 2%;
+
+}
+
+header .song_side .popular_song .pop_song .options button{
+	position: absolute;
+	height: 30px;
+	width: 70px;
+	border-radius: 3px;
+	top:40%;
+	right: 2%;
+	font-size: 16px;
+	border: 2px solid #5a42f38b;
+	color: white;
+	background: #090f1f;
+}
+
 header .song_side .popular_song .pop_song li .bi{
-	position: relative;
 	font-size: 20px;
-	top:-180px;
-	left: 240px;
+	margin-top: 460%;
 	cursor: pointer;
 	transition: .3s linear;
-	opacity: 1;
-
-	
+	opacity: 1;	
 }
 
 /* add song list */
@@ -732,19 +752,12 @@ header .song_side .popular_song .pop_song .noSong{
 	
 }
 
-header .song_side .popular_song .pop_song .noSong .bi{
-	position: relative;
-	top: 40%;
-	left: 47%; 
-	opacity: 1;
-	cursor: pointer;
-	transition: .3s linear;
 
-}
 
 
 header .song_side .popular_song .pop_song li h5{
 	background: rgb(0, 0, 0,0.5);
+	border-radius: 10px;
 	position: relative;
 	left: 0;
 	bottom: 150px;
@@ -1236,6 +1249,7 @@ header .song_side .popular_song .playbox form .playlistSongs li .img_play{
 }
 header .song_side .popular_song .playbox form .playlistSongs  li  .img_shadow{
 	opacity: 0.7;
+	border-radius: 10px;
 	
 }
 header .song_side .popular_song .playbox form .playlistSongs  li .img_play img{
