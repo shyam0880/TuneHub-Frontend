@@ -132,8 +132,8 @@ const Playlist = ({ currSong, onSongSelect, checkPlay }) => {
 
   
   return (
-    <div class="song_side">
-			<nav>
+    <div class="box">
+			{/* <nav>
       <h3>{contextUser ? `${greeting}, ${contextUser.username}` : "Loading..."}</h3>
         <div class="search">
           <input type="text" placeholder="Search Music...."/>
@@ -142,7 +142,7 @@ const Playlist = ({ currSong, onSongSelect, checkPlay }) => {
         <div class="user">
           <img src="" alt=""/>
         </div>
-			</nav>
+			</nav> */}
 			
 			<div className="popular_song">
         {addStatus?(

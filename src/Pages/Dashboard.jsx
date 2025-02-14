@@ -8,7 +8,7 @@ import Playlist from '../Component/Playlist';
 
 
 const Dashboard = () => {
-	const { songs,contextUser, addToRecent, recentSong ,greeting } = useContext(AuthContext);
+	const { songs, setSongs, contextUser, addToRecent, recentSong ,greeting } = useContext(AuthContext);
 	const navigate = useNavigate();
 	const [home,setHome]= useState(0);
     const [popUp, setPopUp] = useState(false);
@@ -16,7 +16,9 @@ const Dashboard = () => {
     const popSongRef1 = useRef(null);
 	const [songList, setSongList] = useState([]); 
   	const [currentIndex, setCurrentIndex] = useState(-1);
-    
+
+	//serch songs list
+	const [search,setSearch] = useState("");
 	
 	
 	if (!contextUser) {
@@ -41,6 +43,7 @@ const Dashboard = () => {
     const [isPlaying, setIsPlaying] = useState(false);
     const audioRef = useRef(new Audio(currentSong.link));
 	const [prevId,setPrevId] = useState(0);
+	const [showDelete,setShowDelete] = useState(false);
 
 	const [playbackMode, setPlaybackMode] = useState("normal"); 
 	// Modes: "normal", "autoPlay", "repeat"
@@ -116,11 +119,25 @@ const Dashboard = () => {
         setIsPlaying(!isPlaying);
     };
 
-	// const togglePlay = () => {
-	// 	setIsPlaying((prev) => !prev);
-	//   };
-    
+	const handleDelete = async(id)=>{
+		try{
+			const response= await fetch(`http://localhost:8080/deleteById/${id}`,{
+			method:"DELETE",	
+			});
+			
+			if (!response.ok) {
+				throw new Error("Failed to fetch songs");
+            }
+			alert(await response.text());
 
+			setSongs((prevSongs) => prevSongs.filter(song => song.id !== id));
+            setShowDelete(null);
+
+		}
+		catch(err){
+			alert(err);
+		}
+	}
             
     const scroll = (ref, distance) => {
         if (ref.current) {
@@ -148,17 +165,17 @@ const Dashboard = () => {
     };
 
 	
-
-	// const handleSongClick = (song) => {
-    //     setCurrentSong(song);
-    //     setIsPlaying(true);
-	// 	addToRecent(song);
-	// 	togglePlay();
-	// 	setSongList([]); // Clear playlist selection
-    // 	setCurrentIndex(-1);
+	//helps to play from search
+	const handleSongClick = (song) => {
+        setCurrentSong(song);
+        setIsPlaying(true);
+		addToRecent(song);
+		togglePlay();
+		setSongList([]); // Clear playlist selection
+    	setCurrentIndex(1);
 
 		
-    // };
+    };
 
 	const handlePlaylistSong = (songs, index) => {
 		setSongList(songs);
@@ -172,7 +189,7 @@ const Dashboard = () => {
 	// Navigate Forward
 	const handleNext = () => {
 	if (songList.length > 0 && currentIndex < songList.length - 1) {
-		const nextIndex = currentIndex + 1;
+		const nextIndex = (currentIndex + 1);
 		setCurrentSong(songList[nextIndex]);
 		setCurrentIndex(nextIndex);
 		addToRecent(songList[nextIndex]);
@@ -183,12 +200,20 @@ const Dashboard = () => {
 	// Navigate Backward
 	const handlePrevious = () => {
 	if (songList.length > 0 && currentIndex > 0) {
-		const prevIndex = currentIndex - 1;
+		const prevIndex = (currentIndex - 1);
 		setCurrentSong(songList[prevIndex]);
 		setCurrentIndex(prevIndex);
 		addToRecent(songList[prevIndex]);
 	}
 	};
+
+	//filter song based on text
+	const filterSongs =
+	search.trim()===""?[]:
+	 songs.filter(song =>
+		song.name.toLowerCase().includes(search.toLowerCase()) ||
+		song.artist.toLowerCase().includes(search.toLowerCase())
+	  );
 
     
 
@@ -203,17 +228,7 @@ const Dashboard = () => {
 			<h4> Like Song</h4>
 			<h4> Recommendation</h4>
 		</div>
-		{/* <div class="menu_song">
-			<li class="songItem" th:each="song:${songs}">
-				<span th:text="${songStat.index + 1}">01</span>
-				<img th:src="@{${song.imgLink}}" alt=""/>
-				<h5 th:text="${song.name}"><br/>
-					<span class="subtitle" th:text="${song.artist}"></span> -  
-            		<span class="subtitle" th:text="${song.genre}"></span> 
-				</h5>
-				<i class="bi playlistPlay bi-play-circle-fill"></i>
-			</li>			
-		</div> */}
+		
 	</div>
     {popUp&&(<div className="popup" >
         <div className="contant">
@@ -223,22 +238,41 @@ const Dashboard = () => {
     </div>)}
 
 
-	{home===0?(<div class="song_side">
+
+	<div class="song_side">
 		<nav>
-			{/* <ul>
-				<li>Discover <span></span></li>
-				<li>MY LIBRARIES</li>
-				<li>RADIO</li>
-			</ul> */}
             <h3>{contextUser ? `${greeting}, ${contextUser.username}` : "Loading..."}</h3>
 			<div class="search">
-				<input type="text" placeholder="Search Music...."/>
+				<input type="text" value={search} placeholder="Search Music...." onChange={(e) => setSearch(e.target.value)} />
 				<i class="bi bi-search"></i>
 			</div>
 			<div class="user">
 				<img src="" alt=""/>
 			</div>
 		</nav>
+	{home===0?(<div className='box'>
+		{search.trim() !== "" && (<div class="menuSong">
+			{filterSongs.length>0?(
+				filterSongs.map((song,index) => (
+						<li key={song.id} className="songItem">
+						<div className="img_play">
+							<img src={song.imgLink} alt="" />
+						</div>
+						<h5>
+							{song.name} <br />
+							<div className="subtitle">{song.artist}</div>
+						</h5>
+						<div className="options">
+							<i className={((currentSong.id===song.id)&& isPlaying)?("bi bi-pause-circle-fill"):("bi bi-play-circle-fill")} onClick={() =>handleSongClick(song)}></i>
+						</div>
+						</li>
+				)
+					)):(
+					<li className="noSong">No matching songs found</li>
+					)
+				}	
+		</div>)}
+
 
 		<div class="content">
 			<h1>Alen walker fade</h1>
@@ -301,7 +335,20 @@ const Dashboard = () => {
 							{song.name} <br />
 							<div className="subtitle">{song.artist}</div>
 						</h5>
-							<i className={((currentSong.id===song.id )&& isPlaying)?("bi bi-pause-circle-fill"):("bi bi-play-circle-fill")} onClick={() =>handlePlaylistSong(songs,index)}></i>
+						<div className="options">
+						<i 
+                            className="bi bi-three-dots-vertical" 
+                            onClick={() => setShowDelete(showDelete === song.id ? null : song.id)} 
+                        ></i>
+							{showDelete === song.id && (
+                            <button className="testButton" onClick={() => handleDelete(song.id)}>
+                                Delete
+                            </button>
+                        )}
+							<i className={`bi ${currentSong.id === song.id && isPlaying ? "bi-pause-circle-fill" : "bi-play-circle-fill"}`} 
+								onClick={() => handlePlaylistSong(songs, index)}
+							></i>
+						</div>
 						</li>
 				)
 					)):(
@@ -326,11 +373,12 @@ const Dashboard = () => {
 				
 			</div>
 		</div>
-	</div>):(" ")}
-
+		</div>):(" ")}
 	{home===1?(
 		<Playlist currSong={currentSong} onSongSelect={handlePlaylistSong} checkPlay={isPlaying}/>
 	):("")}
+	</div>
+
 
 
 	<div className="master_play">
@@ -379,7 +427,7 @@ const Dashboard = () => {
 			}
 			onClick={togglePlaybackMode}
 			></i>
-			<i class="bi bi-heart"></i><i class="bi bi-heart-fill"></i>
+			<i class={currentSong.likeSong?("bi bi-heart-fill"):("bi bi-heart")}></i>
 		</div>
 	</div>
 </header>
