@@ -12,7 +12,9 @@ const AddMusic = () => {
         artist: "",
         genre: "",
         link: "",
+        songID: "",
         imgLink: "",
+        imageID: "",
       });
     const { fetchSongs } = useContext(AuthContext);
     
@@ -40,7 +42,8 @@ const AddMusic = () => {
     
           const data = await response.json();
           console.log(data);
-          return data.secure_url;
+          // return data.secure_url;
+          return data;
         } catch (error) {
           console.error("Upload failed:", error);
           return null;
@@ -57,13 +60,17 @@ const AddMusic = () => {
     
         setErrMessage("Uploading files...");
     
-        const uploadedMusicUrl = await uploadToCloudinary(musicFile, "video");
-        const uploadedImageUrl = await uploadToCloudinary(imageFile, "image");
+        const musicData = await uploadToCloudinary(musicFile, "video");
+        const imageData = await uploadToCloudinary(imageFile, "image");
+        const uploadedMusicUrl = musicData.secure_url;
+        const uploadedMusicID = musicData.public_id;
+        const uploadedImageUrl = imageData.secure_url;
+        const uploadedImageID = imageData.public_id;
     
-        if (uploadedMusicUrl && uploadedImageUrl) {
+        if (uploadedMusicUrl && uploadedImageUrl && uploadedMusicID && uploadedImageID) {
           setMessageStatus(true);
           setErrMessage("Files uploaded successfully!");
-          return { link: uploadedMusicUrl, imgLink: uploadedImageUrl };
+          return { link: uploadedMusicUrl, imgLink: uploadedImageUrl, songID: uploadedMusicID, imageID: uploadedImageID };
         } else {
           setMessageStatus(false);
           setErrMessage("File upload failed. Try again.");
@@ -84,6 +91,8 @@ const AddMusic = () => {
 
           songData.link = uploadedData.link;
           songData.imgLink = uploadedData.imgLink;
+          songData.songID = uploadedData.songID;
+          songData.imageID = uploadedData.imageID;
         } 
 
         try {

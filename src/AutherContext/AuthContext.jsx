@@ -70,7 +70,7 @@ const AuthProvider = ({ children }) => {
     };
 
   return (
-    <AuthContext.Provider value={{ contextUser,songs,addToRecent,recentSong, login, logout,  greeting: getGreeting() , fetchSongs}}>
+    <AuthContext.Provider value={{ contextUser,songs, setSongs ,addToRecent,recentSong, login, logout,  greeting: getGreeting() , fetchSongs}}>
       {children}
     </AuthContext.Provider>
   );
