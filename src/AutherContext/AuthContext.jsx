@@ -3,7 +3,7 @@ import React, { createContext, useState, useEffect } from 'react';
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-  const [contextUser, setContextUser] = useState(null);
+  const [contextUser, setContextUser] = useState(undefined);
   const [recentSong,setRecentSong]=useState([])
   const [songs, setSongs] = useState([]);
 
@@ -33,7 +33,7 @@ const AuthProvider = ({ children }) => {
 
 
   const logout = () => {
-    localStorage.removeItem("user"); 
+    localStorage.removeItem("userdata"); 
     setContextUser(null); 
   };
 
