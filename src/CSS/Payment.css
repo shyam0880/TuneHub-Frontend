@@ -1,0 +1,103 @@
+.payment{
+    font-family: 'Montserrat', sans-serif;
+}
+.payment h1 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+  
+.payment p {
+	font-size: 1.1rem;
+	margin-bottom: 20px;
+}
+  
+.payment .layout {
+	display: flex;
+	justify-content:space-around;
+	margin: 20px 0;
+  	padding: 20px;
+}
+  
+.payment .grow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 350px;
+    border-radius: 10px;
+    padding: 5px;
+}
+
+.payment ol{
+	list-style-type:none;
+    margin-left:10px ;
+
+}
+
+.payment ol li{
+	font-family:Arial, Helvetica, sans-serif;
+    font-size: 18px;
+    padding: 3px 0;
+}
+  
+.payment .info {
+	height: 290px;
+    width: 100%;
+}
+  
+.payment .buy-button {
+	width: 95%;
+	border: none;
+	color: white;
+	padding: 15px 32px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 1.2rem;
+	margin: 4px 2px;
+	cursor: pointer;
+	border-radius: 25px;
+  }
+  
+.payment .buy-button:hover {
+	transform: scale(1.05);
+  }
+
+.payment .buy-button:active {
+    background-color: #326233;
+    transform: scale(0.95);
+}
+
+.payment .grow:nth-child(1) h2{
+	color: rgba(255, 210, 215, 0.693);
+    
+}
+
+.payment .grow:nth-child(2) h2{
+	color:rgb(196, 177, 212);
+}
+
+.payment .grow:nth-child(3) h2{
+	color: rgb(255, 200, 98);
+}
+
+.payment .grow:nth-child(1){
+    border: 3px solid rgba(255, 210, 215, 0.5);
+}
+.payment .grow:nth-child(2){
+    border: 3px solid rgb(196, 177, 212, 0.5);
+}
+.payment .grow:nth-child(3){
+    border: 3px solid rgb(255, 200, 98, 0.5);
+}
+
+.payment .grow:nth-child(1) .buy-button{
+	background-color: rgba(255, 210, 215, 0.5);
+}
+
+.payment .grow:nth-child(2) .buy-button{
+	background-color:rgb(196, 177, 212,0.5);
+}
+
+.payment .grow:nth-child(3) .buy-button{
+	background-color: rgb(255, 200, 98,0.5);
+}
