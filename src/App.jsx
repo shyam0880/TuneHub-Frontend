@@ -2,16 +2,19 @@
 import './App.css';
 import React, { lazy, Suspense } from 'react';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { AuthProvider } from "./AutherContext/AuthContext"
+import { AuthProvider } from "./Context/AuthContext"
+import { DataProvider } from './Context/DataContext';
 import ReactLoading from 'react-loading';
 const Home = lazy(() => import('./Pages/Home'));
 const Dashboard = lazy(() => import('./Pages/Dashboard'));
 const Payment = lazy(()=>import('./Payment/Payment'))
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import Artist from './Component/Artist';
+import Loading from './Component/Loading';
+import DownloadSong from './Component/DownloadSong';
 const Playlist = lazy(() => import('./Component/Playlist'));
 const CreatePlaylist = lazy(() => import('./Component/CreatePlaylist'));
-const ProtectedRoute = lazy(() => import('./AutherContext/ProtectedRouter'));
+const ProtectedRoute = lazy(() => import('./Context/ProtectedRouter'));
 
 
 
@@ -44,7 +47,11 @@ function App() {
 					{
 						path: "artist",
 						element: <Artist />,
-					}
+					},
+					{
+						path: "downloaded",
+						element: <DownloadSong />,
+					},
 				]
 			},
 			
@@ -55,13 +62,15 @@ function App() {
 
   return (
 	<AuthProvider>
+		<DataProvider>
 		<Suspense fallback={
                 <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
-                    <ReactLoading type="bubbles" color="#000" height={80} width={80} />
-                </div>
+                    <Loading />
+                </div> 
         }>
 			<RouterProvider router={router} />
 		</Suspense>
+		</DataProvider>
 	</AuthProvider>
 )
 }
