@@ -1,0 +1,208 @@
+.artist {
+    max-width: 100%;
+    margin: auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.artist .form-container {
+    position: fixed;
+    bottom: 100px;
+    right: 10px;
+    padding: 15px 15px 50px 15px;
+    border: 2px solid #007bff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+.artist .form-container form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.artist .form-container .input-field {
+    width: 300px;
+    padding: 10px;
+    margin: 10px 0;
+    background: none;
+    color: white;
+    border: 1px solid #007bff87;
+    border-radius: 5px;
+}
+
+.artist .form-container .submit-btn {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    cursor: pointer;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    background: #007bff;
+    color: white;
+    transition: all 0.3s;
+}
+
+.artist .form-container .cancel-btn {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    cursor: pointer;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    background: #007bff;
+    color: white;
+    transition: all 0.3s;
+}
+.artist .form-container .submit-btn:hover {
+    background: #0056b3;
+}
+/* ---------------- */
+
+.artist .artist-list {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+/* .artist-item {
+    background: white;
+    border-radius: 10px;
+    margin: 10px;
+    padding: 15px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+
+.artist-item:hover {
+    transform: scale(1.05);
+} */
+.artist .artist-list .add-item{
+    width: 150px;
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid whitesmoke;
+    border-radius: 50%;
+}
+
+.artist .artist-list li{
+    margin: 15px;
+}
+.artist .artist-list li .artist-image{
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin-bottom: 5px;
+    transition: transform 0.3s;
+}
+
+.artist .artist-list li img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.artist .artist-list li .artist-image:hover {
+    transform: scale(1.05);
+}
+
+.artist .artist-image:hover .play-btn,
+.artist .artist-image:hover .options-btn {
+    display: block;
+}
+
+.artist .artist-list li .artist-name {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: white;
+    margin: 10px;
+    text-align: center;
+}
+
+.artist .artist-list li .play-btn {
+    display: none;
+    position: absolute;
+    bottom: 3px;
+    right: 3px;
+    border: none;
+    padding: 7px 10px;
+    border-radius: 50%;
+    background: wheat;
+    color: black;
+    cursor: pointer;
+    transition: background 0.3s; 
+}
+
+
+
+.artist .artist-list li .options-container {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.artist .artist-list li .options-btn {
+    display: none;
+    background: #666;
+    color: white;
+    padding: 7px 10px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.artist .artist-list li .options-btn:hover {
+    background: #444;
+}
+
+.artist .artist-list li .options-menu {
+    position: absolute;
+    top: 35px;
+    right: 0;
+    background: white;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    padding: 5px 0;
+    display: none;
+}
+
+.artist .artist-list li .options-container .options-menu {
+    display: block;
+}
+
+.artist .artist-list li .options-menu button {
+    background: none;
+    border: none;
+    color: black;
+    width: 100%;
+    padding: 5px 10px;
+    text-align: center;
+    font-size: 16px;
+    display: block;
+}
+
+.artist .artist-list li .options-menu button:hover {
+    background: #f5f5f5;
+}
+
+.artist .artist-list li .noArtist {
+    text-align: center;
+    font-weight: bold;
+    color: gray;
+}
+
+.artist .artist-list li .bi{
+    font-size: 20px;
+
+}
