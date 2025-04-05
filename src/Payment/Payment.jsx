@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react";
-import AuthContext from '../AutherContext/AuthContext';
+import AuthContext from '../Context/AuthContext';
 import { useNavigate } from "react-router-dom";
 
 import '../CSS/Payment.css';
@@ -8,7 +8,7 @@ const Payment = () => {
 
     const [orderId, setOrderId] = useState("");
     const [razorpayKey, setRazorpayKey] = useState("");
-    const { contextUser } = useContext(AuthContext);
+    const { contextUser, setContextUser } = useContext(AuthContext);
     const navigate = useNavigate();
 
     if (contextUser.premium || contextUser.role === "admin") {
@@ -34,8 +34,15 @@ const Payment = () => {
    // Create Order on Backend
    const createOrder = async (amount) => {
         try{
-            const response = await fetch(`http://localhost:8080/api/payment/create-order?amount=${amount}`, {
+            const response = await fetch("http://localhost:8080/api/payment/create-order", {
                 method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ 
+                    amount:amount, 
+                    email:contextUser.email
+                }), // ✅ Sending email in request
             });
             if (!response.ok) {
                 throw new Error(`Failed to create order: ${response.statusText}`);
@@ -50,7 +57,6 @@ const Payment = () => {
             setOrderId(data.order_id);
             handlePayment(data);
         } catch (error) {
-            console.error("Error creating order:", error);
             alert("Failed to create order. Please try again.");
         }
     };
@@ -68,14 +74,14 @@ const Payment = () => {
             currency: orderData.currency,
             order_id: orderData.order_id,
             name: "TuneHub",
-            description: "Test Transaction",
+            description: "Premium Subscription",
             handler: function (response) {
-                alert("Payment Successful! Payment ID: " + response.razorpay_payment_id);
+                verifyPayment(response, orderData.amount);
             },
             prefill: {
-                name: "Test User",
-                email: "test@example.com",
-                contact: "9999999999",
+                name: contextUser.name || "Test User",
+                email: contextUser.email || "test@example.com",
+                contact: "123456789",
             },
             theme: {
                 color: "#3399cc",
@@ -86,12 +92,10 @@ const Payment = () => {
         rzp1.open();
     };
 
+
+
     return (
-        <div className="payment">
-            {/* <h2>Pay Now</h2> */}
-            {/* <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} /> */}
-            {/* <button onClick={createOrder}>Pay ₹{amount}</button> */}
-            
+        <div className="payment">            
                 <h1>Listen without limits. Try 1 month of Premium Individual for free.</h1>
                 <p>Only Rs 5000/month after. Cancel anytime. </p>
                 <section className="layout">
@@ -106,7 +110,7 @@ const Payment = () => {
                                 <li><i className="bi bi-caret-right"></i> 15 hours/month of listening time from our audiobooks subscriber catalog</li>
                             </ol>
                         </div>
-                        <button type="submit" className="buy-button"  onClick={()=>createOrder(500)}>Pay ₹500</button>
+                        <button type="submit" className="buy-button" onClick={()=>createOrder(500)}>Pay ₹500</button>
                     </div>
                     <div className="grow">
                         <div className="info">
