@@ -1,18 +1,28 @@
 import React, {useState,useContext} from 'react';
-import Login from './login';
-import Register from './Register';
-import  AuthContext  from "../AutherContext/AuthContext";
+import Login from '../Component/Login';
+import Register from '../Component/Register';
+import  AuthContext  from "../Context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from 'react';
 
 const Home = () => {
-    const [state,setState] = useState(0);
-	const navigate = useNavigate();
 	const { contextUser } = useContext(AuthContext);
+	const navigate = useNavigate();
 
-
-	if (contextUser) {
-		navigate("/Dashboard"); 
+	useEffect(() => {
+		if(contextUser==undefined){
+			return;
+		}
+		if (contextUser) {
+			navigate("/dashboard");
+		}
 	}
+	, [contextUser, navigate]);
+
+    const [state,setState] = useState(0);
+
+
+
 
   return (
     <div className="home">
@@ -32,9 +42,10 @@ const Home = () => {
 			</div>
 
 			<div className="home2">
-				{state===0?<img src='../src/image/musicband.png'alt="logo" />: ''}
+				{state===0?<img src='https://shorturl.at/xVVGZ'alt="logo" />: ''}
+				{/* {state===0?<img src='../src/image/musicband.png'alt="logo" />: ''} */}
 				{state===1?<Login/>: ''}
-				{state===2?<Register/>: ''}
+				{state===2?<Register />: ''}
 			</div>
 	</div>
   )
