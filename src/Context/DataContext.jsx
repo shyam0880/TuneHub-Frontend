@@ -25,25 +25,6 @@ export const DataProvider = ({ children }) => {
         imgLink: "../src/Image/meain jaha rahu.jpg",
         likeSong: false,
     });
-
-    const [downloadedSong,setDownloadedSong]=useState([]);
-    const [isDownloadLoaded, setIsDownloadLoaded] = useState(false);
-
-// Load downloaded songs from localStorage on mount
-    useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem('downloadedSong'));
-    if (stored) setDownloadedSong(stored);
-    setIsDownloadLoaded(true);
-    }, []);
-
-    // Save to localStorage *only after* we loaded from it
-    useEffect(() => {
-    if (isDownloadLoaded) {
-        localStorage.setItem("downloadedSong", JSON.stringify(downloadedSong));
-    }
-    }, [downloadedSong, isDownloadLoaded]);
-
-    // Save currentSong to localStorage whenever it changes
     useEffect(() => {
         if (currentSong) {
             localStorage.setItem("currentsong", JSON.stringify(currentSong));
@@ -98,6 +79,26 @@ export const DataProvider = ({ children }) => {
           }
         });
     }
+
+    const [downloadedSong,setDownloadedSong]=useState([]);
+    const [isDownloadLoaded, setIsDownloadLoaded] = useState(false);
+
+// Load downloaded songs from localStorage on mount
+    useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem('downloadedSong'));
+    if (stored) setDownloadedSong(stored);
+    setIsDownloadLoaded(true);
+    }, []);
+
+    // Save to localStorage *only after* we loaded from it
+    useEffect(() => {
+    if (isDownloadLoaded) {
+        localStorage.setItem("downloadedSong", JSON.stringify(downloadedSong));
+    }
+    }, [downloadedSong, isDownloadLoaded]);
+
+    // Save currentSong to localStorage whenever it changes
+    
     
 
     // ✅ Memoize the context data (include all necessary dependencies)
