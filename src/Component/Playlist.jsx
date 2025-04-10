@@ -1,42 +1,23 @@
 import React ,{ useState, useEffect, useContext }from 'react';
-import AuthContext from '../AutherContext/AuthContext';
+// import AuthContext from '../AutherContext/AuthContext';
+import { Outlet, useNavigate } from 'react-router-dom';
 
-const Playlist = ({ currSong, onSongSelect, checkPlay }) => {
+const Playlist = ({ currSong, onSongSelect, checkPlay,setAlertMessage }) => {
+  // const { setAlertMessage } = useContext(AuthContext);
   const [playlist, setPlayList] = useState([]);
-  const [addStatus,setAddStatus] = useState(true);
-  const { contextUser, songs, greeting } = useContext(AuthContext);
-  const [playlistName, setPlaylistName] = useState("");
-  const [playlistType, setPlaylistType] = useState(""); 
-  const [playlistImageLink, setPlaylistImageLink] = useState(""); 
-  const [selectedSongs, setSelectedSongs] = useState(new Map());
   const [currentPlaylist, setCurrentPlaylist] = useState(null);
-  const [playlistSongs, setPlaylistSongs] = useState();
+  const [playlistSongs, setPlaylistSongs] = useState(); //used to store songs when extract by playlist id
   const [hidePlaylist, setHidePlaylist] = useState(true);
-  const [playlistErrorMessage, setPlaylistErrorMessage] = useState("");
-  const [ messageStatus, setMessageStatus] = useState(false);
-  const [popUp, setPopUp] = useState(false);
+  const navigate = useNavigate();
   
-
-  const handleCheckboxChange = (song) => {
-    setSelectedSongs((prevSelected) => {
-      const newSelected = new Map(prevSelected);
-      if (newSelected.has(song.id)) {
-        newSelected.delete(song.id);
-      } else {
-        newSelected.set(song.id, song);
-      }
-      return newSelected;
-    });
-  };
-
-
   const fetchPlaylist =async()=>{
     try{
       const response = await fetch("http://localhost:8080/viewPlaylist");
 
       if(!response.ok){
         const errorMessage = await response.text();
-				throw new Error(errorMessage || "PlayList Load Failed");
+				// throw new Error(errorMessage || "PlayList Load Failed");
+        setAlertMessage(errorMessage || "PlayList Load Failed");
       }
 
       const data = await response.json();
@@ -44,15 +25,18 @@ const Playlist = ({ currSong, onSongSelect, checkPlay }) => {
 
     }
     catch(err){
-      alert(err);
+      // alert(err);
+      setAlertMessage(err.message);
     }
   };
-
-
 
   useEffect(()=>{
     fetchPlaylist();
   },[])
+
+  const handleEdit = (playlist) => {
+    navigate('/create-playlist', { state: { playlist } });
+  };
 
   const fetchPlaylistById =async(id)=>{
     try{
@@ -64,53 +48,11 @@ const Playlist = ({ currSong, onSongSelect, checkPlay }) => {
 
     }
     catch(err){
-      alert(err);
+      // alert(err);
+      setAlertMessage(err.message);
     }
 
   }
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    if (!playlistName.trim() || !playlistType.trim() || selectedSongs.size === 0 || !playlistImageLink.trim()) {
-      alert("Please enter a playlist name, type, image link, and select at least one song.");
-      return;
-    }
-
-    const payload = {
-      name: playlistName,
-      type: playlistType,
-      imgLink: playlistImageLink,
-      songs: Array.from(selectedSongs.values()),
-    };
-
-
-    try {
-      const response = await fetch("http://localhost:8080/addToPlaylist", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload), 
-      });
-
-      if (response.ok) {
-        alert(await response.text());
-        setPlaylistName("");
-        setPlaylistType("");
-        setPlaylistImageLink(""); 
-        setSelectedSongs(new Map());
-        setMessageStatus(true);
-        setPlaylistErrorMessage("Playlist Added successfully");
-      } else {
-        setMessageStatus(false);
-        setPlaylistErrorMessage("Failed to add playlist.");
-      }
-    } catch (error) {
-      console.error("Error submitting playlist:", error);
-      alert("Something went wrong!");
-    }
-  };
-
 
 
   const handleSongPlaylist = (playlistId) => {
@@ -119,68 +61,95 @@ const Playlist = ({ currSong, onSongSelect, checkPlay }) => {
       setCurrentPlaylist(foundPlaylist);
       setHidePlaylist(false)
     } else {
-      alert('Playlist not found');
+      // alert('Playlist not found');
+      setAlertMessage('Playlist not found');
     }
   };
 
-  useEffect(()=>{
-      setTimeout(()=>{
-        setPlaylistErrorMessage(" ")
-      },3000)
-    },[playlistErrorMessage]);
+   // ✅ NEW FUNCTION TO DELETE A PLAYLIST
+   const handleDeletePlaylist = async (playlistId) => {
+    try {
+      const response = await fetch(`http://localhost:8080/deletePlaylist/${playlistId}`, {
+        method: 'DELETE'
+      });
+      if (response.ok) {
+        setAlertMessage('Playlist deleted successfully');
+        setHidePlaylist(true);
+        fetchPlaylist();
+      } else {
+        setAlertMessage(await response.text());
+      }
+    } catch (err) {
+      setAlertMessage('Failed to delete playlist');
+    }
+  };
 
+   // ✅ NEW FUNCTION TO REMOVE SONG FROM A PLAYLIST
+   const handleRemoveSong = async (playlistId, songId) => {
+    try {
+      const response = await fetch(`http://localhost:8080/playlist/${playlistId}/songs/${songId}`, {
+        method: 'PUT'
+      });
+      if (response.ok) {
+        setAlertMessage('Song removed from playlist');
+        const updatedPlaylist = { ...currentPlaylist };
+        updatedPlaylist.songs = updatedPlaylist.songs.filter(song => song.id !== songId);
+        setCurrentPlaylist(updatedPlaylist);
+      } else {
+        setAlertMessage(await response.text());
+      }
+    } catch (err) {
+      setAlertMessage('Error removing song');
+    }
+  };
 
   
   return (
-    <div class="box">
-			{/* <nav>
-      <h3>{contextUser ? `${greeting}, ${contextUser.username}` : "Loading..."}</h3>
-        <div class="search">
-          <input type="text" placeholder="Search Music...."/>
-          <i class="bi bi-search"></i>
-        </div>
-        <div class="user">
-          <img src="" alt=""/>
-        </div>
-			</nav> */}
-			
+    <div class="box">		
 			<div className="popular_song">
-        {addStatus?(
-          <>
           <div className="newupdate">
-            <img src='../src/Image/grass.jpg' alt='image'/>
+            <img src={hidePlaylist ?'../src/Image/grass.jpg':currentPlaylist.imgLink} alt='image'className='image'/>
+            {/* <img src={hidePlaylist ?'https://shorturl.at/I8fN3':currentPlaylist.imgLink} alt='image'/> */}
             <div className="addplaylist">
               <div className="sideplay">
               <h2>{hidePlaylist ? "Playlist" : (currentPlaylist.name || "Playlist not found")}</h2>
                 <h4>{hidePlaylist ? "On Repeat" : currentPlaylist.type || "Not set"}</h4>
               </div>
               <div className="picons">
-              {!hidePlaylist&&(<i class="bi bi-arrow-left-circle" onClick={() => setHidePlaylist(true)}></i>)}
+              {!hidePlaylist&&(
+                <>
+                <i class="bi bi-arrow-left-circle" onClick={() => setHidePlaylist(true)}></i>
+                <i class="bi bi-trash3" onClick={() => handleDeletePlaylist(currentPlaylist.id)}></i>
+                </>
+                )}
               <i className="bi bi-play-circle-fill"></i>
               </div>    
             </div>
 			    </div>
           {hidePlaylist?(
           <div className="playlist_song" >
-                    
             {playlist.length>0?(
             playlist.map((play) => (
                 <li key={play.id} className="songItem">
-                <div className="img_play">
-                  <img src={play.imgLink} alt={play.name} />
-                </div>
-                <h5>
-                  {play.name} <br />
-                  <div className="subtitle">{play.type}</div>
-                </h5>
-                <i className="bi bi-list-ul" onClick={() => handleSongPlaylist(play.id)}></i>
+                  <div className="img_play">
+                    <img src={play.imgLink} alt={play.name} />
+                  </div>
+                  <h5>
+                    {play.name} <br />
+                    <div className="subtitle">{play.type}</div>
+                  </h5>
+                  <i className="bi bi-list-ul" onClick={() => handleSongPlaylist(play.id)}></i>
+                  {/* <i
+                    className="bi bi-pencil-square"
+                    title="Edit Playlist"
+                    style={{ marginLeft: "10px", cursor: "pointer" }}
+                    onClick={() => handleEdit(play)}></i> */}
                 </li>
             )
               )):(
                 <li className="noSong"></li>
               )
-            }
-                    
+            }        
           </div>
           ):(
             <div className="playlist_song" >
@@ -197,6 +166,7 @@ const Playlist = ({ currSong, onSongSelect, checkPlay }) => {
                         <div className="subtitle">{song.artist}</div>
                       </h5>
                         <i className={((currSong.id===song.id) && checkPlay)?("bi bi-pause-circle-fill"):("bi bi-play-circle-fill")} onClick={() =>onSongSelect(currentPlaylist.songs, index)}></i>
+                        {/* <i class="bi bi-x-circle" onClick={() => handleRemoveSong(currentPlaylist.id, song.id)}></i> */}
                     </li>
                   ))
                 ) : (
@@ -204,96 +174,12 @@ const Playlist = ({ currSong, onSongSelect, checkPlay }) => {
                 )}
 
           </div>
-          )}
-          </>
-        ):(
-          <div className="playbox">
-              <form onSubmit={handleSubmit}>
-                {popUp&&(<div className="inputdata">
-                  <div className="actualdata">
-                  <i class="bi bi-arrow-left-square" onClick={()=>setPopUp(false)}></i>
-                    <label class="text">Playlist Name: </label>
-                        <input
-                          type="text"
-                          class="input"
-                          name="name"
-                          placeholder="Enter Playlist Name"
-                          value={playlistName}
-                          onChange={(e) => setPlaylistName(e.target.value)}
-                        />
-                        <br />
-
-                        <label class="text">Playlist Type: </label>
-                        <input
-                          type="text"
-                          name="type"
-                          class="input"
-                          placeholder="Enter Playlist type"
-                          value={playlistType}
-                          onChange={(e) => setPlaylistType(e.target.value)}
-                        />
-                        <br />
-
-                        <label class="text">Playlist Image Link: </label>
-                        <input
-                          type="text"
-                          name="imgLink"
-                          class="input"
-                          value={playlistImageLink}
-                          onChange={(e) => setPlaylistImageLink(e.target.value)}
-                          placeholder="Enter Image URL"
-                        />
-                        <br />
-                      <input type="submit" value="ADD PLAYLIST"/>
-                      <br/>
-                      {playlistErrorMessage && <p style={{ color: messageStatus ? "green" : "red",fontSize: "20px" }}>{playlistErrorMessage}</p>}
-                  </div>
-                </div>)}
-                
-                <div className="playlistSongs">
-                    {songs.length>0?
-                    (songs.map((song) => (
-                    <li key={song.id} className="songItem">
-                      <label>
-                        <input type="checkbox" 
-                        name="songs"
-                        className='checkbox' 
-                        value={song.id}
-                        checked={selectedSongs.has(song.id)}
-                        onChange={() => handleCheckboxChange(song)}
-                        />
-                        <div class="checkmark"></div>
-                      </label>
-                      {/* <input 
-                      type="checkbox"  
-                      name="songs"
-                      className='checkbox' 
-                      value={song.id}
-                      checked={selectedSongs.has(song.id)}
-                      onChange={() => handleCheckboxChange(song)}
-                      /> */}
-                      <div className={`img_play ${selectedSongs.has(song.id) ? "img_shadow" : ""}`}>
-                        <img src={song.imgLink} alt={song.name} />
-                      </div>
-                      <h5>
-                        {song.name} <br />
-                        <div className="subtitle">{song.artist}</div>
-                      </h5>
-                    </li>))
-                    ):(
-                      <li className="noSong"></li>
-                    )
-                    }
-                </div>
-              </form>
-          </div>
-        )}
+          )}        
 		  </div>
       <div className="createplaylist">
-      {selectedSongs.size>0 &&(<i class="bi bi-folder-plus" onClick={()=>setPopUp(true)}></i>)}
-        <div className='Btn'  onClick={()=>setAddStatus(!addStatus)} alt="Create Playlist">
-          <div class="sign"><i className={addStatus?"bi bi-plus":"bi-arrow-left-short"}></i></div>
-          <div class="text">{addStatus?"Create":"Back"}</div>
+        <div className='Btn'  onClick={()=>navigate("create-playlist")} alt="Create Playlist">
+          <div class="sign"><i class="bi bi-plus"></i></div>
+          <div class="text">Create</div>
         </div>
       </div>
 		</div>
