@@ -1,23 +1,44 @@
 import React,{useEffect, useState, useContext} from 'react';
 import '../CSS/addsong.css';
-import AuthContext from '../AutherContext/AuthContext';
+import AuthContext from '../Context/AuthContext';
 
-const AddMusic = () => {
+const AddMusic = ({ editingSong, setEditingSong, setPopUp }) => {
     const [errMessage,setErrMessage] = useState();
     const [ messageStatus, setMessageStatus] = useState(false);
     const [musicFile, setMusicFile] = useState(null);
     const [imageFile, setImageFile] = useState(null);
+    const [artists, setArtists] = useState([]);
+    const [selectedArtist, setSelectedArtist] = useState("");
+
     const [song, setSong] = useState({
         name: "",
-        artist: "",
         genre: "",
-        link: "",
-        songID: "",
-        imgLink: "",
-        imageID: "",
       });
+
     const { fetchSongs } = useContext(AuthContext);
-    
+
+    useEffect(() => {
+      const fetchArtists = async () => {
+        try{
+          const res = await fetch("http://localhost:8080/artists");
+          const data = await res.json();
+          setArtists(data);
+        } catch (err){
+          console.error("Error fetching artists:", err);
+
+        }
+      }
+      fetchArtists();
+    }, []);
+
+    useEffect(() => {
+      if (editingSong) {
+        setSong({ name: editingSong.name, genre: editingSong.genre });
+        setSelectedArtist(editingSong.artistId || '');
+      }
+    }, [editingSong]);
+
+
     const handleChange = (e) => {
       const {name,value} = e.target;
       setSong({
@@ -25,83 +46,30 @@ const AddMusic = () => {
             [name]: value,
           });
     };
-
-    const uploadToCloudinary = async (file, resourceType) => {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("upload_preset", "musicData_preset"); 
-      formData.append("cloud_name", "dvwcy1jab"); 
-    
-        try {
-          const response = await fetch(`https://api.cloudinary.com/v1_1/dvwcy1jab/${resourceType}/upload`,
-            {
-              method: "POST",
-              body: formData,
-            }
-          );
-    
-          const data = await response.json();
-          console.log(data);
-          // return data.secure_url;
-          return data;
-        } catch (error) {
-          console.error("Upload failed:", error);
-          return null;
-        }
-      };
-    
-      // Handle File Upload
-      const handleUpload = async () => {
-        if (!musicFile || !imageFile) {
-          setMessageStatus(false);
-          setErrMessage("Please select both music and image files before uploading.");
-          return;
-        }
-    
-        setErrMessage("Uploading files...");
-    
-        const musicData = await uploadToCloudinary(musicFile, "video");
-        const imageData = await uploadToCloudinary(imageFile, "image");
-        const uploadedMusicUrl = musicData.secure_url;
-        const uploadedMusicID = musicData.public_id;
-        const uploadedImageUrl = imageData.secure_url;
-        const uploadedImageID = imageData.public_id;
-    
-        if (uploadedMusicUrl && uploadedImageUrl && uploadedMusicID && uploadedImageID) {
-          setMessageStatus(true);
-          setErrMessage("Files uploaded successfully!");
-          return { link: uploadedMusicUrl, imgLink: uploadedImageUrl, songID: uploadedMusicID, imageID: uploadedImageID };
-        } else {
-          setMessageStatus(false);
-          setErrMessage("File upload failed. Try again.");
-          return null;
-        }
-      };
-    
     
       const handleSubmit = async (e) => {
         e.preventDefault(); 
-
-        let songData = { ...song };
-
-        if (!song.link || !song.imgLink) {  
-          const uploadedData = await handleUpload();  
-
-          if (!uploadedData) return;
-
-          songData.link = uploadedData.link;
-          songData.imgLink = uploadedData.imgLink;
-          songData.songID = uploadedData.songID;
-          songData.imageID = uploadedData.imageID;
-        } 
+        if (!musicFile || !imageFile) {
+          setMessageStatus(false);
+          setErrMessage("Please upload both song and image files.");
+          return;
+        }
+        const formData = new FormData();
+        formData.append("name", song.name);
+        formData.append("genre", song.genre);
+        if (musicFile) formData.append('songFile', musicFile);
+        if (imageFile) formData.append('imageFile', imageFile);
+        if (selectedArtist) formData.append("artistId", selectedArtist);
 
         try {
-          const response = await fetch("http://localhost:8080/addSong", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(songData),
+          const url = editingSong
+          ? `http://localhost:8080/songupdate/${editingSong.id}`
+          : 'http://localhost:8080/addSong';
+          const method = editingSong ? 'PUT' : 'POST';
+    
+          const response = await fetch(url, {
+            method,
+            body: formData,
           });
     
           const result = await response.text(); 
@@ -109,8 +77,13 @@ const AddMusic = () => {
           if (response.ok) {
             setMessageStatus(true);
             setErrMessage(result)
-            setSong({ name: "", artist: "", genre: "", link: "", imgLink: "" }); 
+            setSong({ name: "", genre: ""}); 
+            setMusicFile(null);
+            setImageFile(null);
+            setSelectedArtist("");
             fetchSongs();
+            setPopUp(false);
+            setEditingSong(null);
           } else {
             setMessageStatus(false);
             setErrMessage("Failed to add song: " + result);
@@ -132,7 +105,7 @@ const AddMusic = () => {
     
   return (
     <form onSubmit={handleSubmit} className="song_form">
-    <h3>Add Song</h3>
+    <h3>{editingSong ? 'Edit Song' : 'Add Song'}</h3>
 
     <div className="form-group">
       <label>Song name:</label>
@@ -140,17 +113,73 @@ const AddMusic = () => {
     </div>
 
     <div className="form-group">
-      <label>Song Artist:</label>
-      <input type="text" name="artist" value={song.artist} onChange={handleChange} required />
-    </div>
-
-    <div className="form-group">
       <label>Song Genre:</label>
-      <input type="text" name="genre" value={song.genre} onChange={handleChange} required />
+      <select name="genre" value={song.genre} onChange={handleChange} required>
+        <optgroup label="Mainstream & Popular Genres">
+          <option value="Pop">Pop</option>
+          <option value="Rock">Rock</option>
+          <option value="Hip Hop / Rap">Hip Hop / Rap</option>
+          <option value="R&B / Soul">R&B / Soul</option>
+          <option value="Electronic / EDM">Electronic / EDM</option>
+        </optgroup>
+
+        <optgroup label="Alternative & Indie">
+          <option value="Alternative Rock">Alternative Rock</option>
+          <option value="Indie Pop / Rock">Indie Pop / Rock</option>
+          <option value="Lo-fi">Lo-fi</option>
+        </optgroup>
+
+        <optgroup label="Classical & Traditional">
+          <option value="Classical">Classical</option>
+          <option value="Opera">Opera</option>
+          <option value="Folk">Folk</option>
+        </optgroup>
+
+        <optgroup label="Country & Regional">
+          <option value="Country">Country</option>
+          <option value="Bluegrass">Bluegrass</option>
+          <option value="Latin">Latin</option>
+          <option value="Afrobeat">Afrobeat</option>
+        </optgroup>
+
+        <optgroup label="High-Energy / Party Music">
+          <option value="Reggae">Reggae</option>
+          <option value="Dancehall">Dancehall</option>
+          <option value="Disco / Funk">Disco / Funk</option>
+          <option value="Trap">Trap</option>
+        </optgroup>
+
+        <optgroup label="Heavy & Extreme">
+          <option value="Metal">Metal</option>
+          <option value="Hard Rock">Hard Rock</option>
+          <option value="Punk Rock">Punk Rock</option>
+        </optgroup>
+
+        <optgroup label="World & Experimental">
+          <option value="K-pop">K-pop</option>
+          <option value="J-pop">J-pop</option>
+          <option value="Bollywood">Bollywood</option>
+          <option value="Ambient">Ambient</option>
+          <option value="Experimental">Experimental</option>
+        </optgroup>
+      </select>
+    </div>
+
+
+    <div className="form-group">
+        <label>Select Artist:</label>
+        <select value={selectedArtist} onChange={(e) => setSelectedArtist(e.target.value)} required>
+          <option value="">Select artist</option>
+          {artists.map((artist) => (
+            <option key={artist.id} value={artist.id}>
+              {artist.name}
+            </option>
+          ))}
+        </select>
     </div>
 
     <div className="form-group">
-      <label>Song Link:</label>
+      <label>Upload Song:</label>
       <label className="imageClass" for="songID">
         <i class="up bi-upload"></i>
         {musicFile ? musicFile.name : "Upload Song"}
@@ -159,7 +188,7 @@ const AddMusic = () => {
     </div>
 
     <div className="form-group">
-      <label>Image:</label>
+      <label>Upload Image:</label>
       <label className="imageClass" for="imageID">
         <i class="up bi-upload"></i>
         {imageFile ? imageFile.name : "Upload Image"}
@@ -167,7 +196,7 @@ const AddMusic = () => {
       <input type="file" id="imageID" accept="image/*" onChange={(e) => setImageFile(e.target.files[0])} required />
     </div>
 
-    <button type="submit" className="btn btn-primary">ADD SONG</button>
+    <button type="submit" className="btn btn-primary">{editingSong ? 'Update Song' : 'Add Song'}</button>
     {errMessage && <p style={{ color: messageStatus ? "green" : "red",fontSize: "20px" }}>{errMessage}</p>}
   </form>
   )
