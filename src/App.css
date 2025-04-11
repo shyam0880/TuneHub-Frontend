@@ -86,6 +86,7 @@ body {
 	border-radius: 10px;
 	width: 30rem;
 	padding: 20px;
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 .form_container{
@@ -109,7 +110,7 @@ body {
 .form_container input{
 	width: 100%;
 	height: 2.5rem;
-	margin: 20px 0;
+	margin: 10px 0;
 	padding: 0 10px;
 	border: 2px solid #642bff;
 	border-radius: 10px;
@@ -214,6 +215,42 @@ body {
 	background: #642bff;
 }
 
+.flex-row {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 10px;
+	justify-content: space-between;
+}
+  
+.btn {
+	margin-top: 10px;
+	width: 100%;
+	height: 50px;
+	border-radius: 10px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-weight: 500;
+	gap: 10px;
+	border: 1px solid #ededef;
+	background-color: white;
+	cursor: pointer;
+	transition: 0.2s ease-in-out;
+}
+  
+.btn:hover {
+border: 1px solid #2d79f3;
+
+}
+
+.p {
+	text-align: center;
+	color: white;
+	font-size: 18px;
+	margin: 5px 0;
+}
+
 
 /* popup add */
 
@@ -223,7 +260,6 @@ header .popup{
 	top: 0;
 	left:0;
 	position: fixed;
-	background: rgba(49,49,49,0.8);
 	backdrop-filter: blur(5px);
 	z-index: 9;
 	color: white;
@@ -247,3 +283,66 @@ header .popup{
   header .popup .contant .bi:hover{
 	color: #fff;
   }
+
+  /* ----------------- */
+
+  /* alert add */
+
+  /* @keyframes popup {
+	0% {
+	  transform: scale(0.5);
+	  opacity: 0;
+	}
+	20% {
+	  transform: scale(1);
+	  opacity: 1;
+	}
+	80% {
+	  transform: scale(1);
+	  opacity: 1;
+	}
+	100% {
+	  transform: scale(0.5);
+	  opacity: 0;
+	}
+  } */
+
+  @keyframes slideInAndUp {
+	0% {
+	  transform: translateX(100%) translateY(0);
+	  opacity: 0;
+	}
+	50% {
+	  transform: translateX(0) translateY(0);
+	  opacity: 1;
+	}
+	80% {
+	  transform: translateX(0) translateY(-50px);
+	  opacity: 1;
+	}
+	100% {
+	  transform: translateX(0) translateY(-50px);
+	  opacity: 0;
+	}
+  }
+
+  header .alert{
+	position: fixed;
+	width: 20%;
+	height: 7%;
+	right: 1%;
+	top: 10%;
+	border: 2px solid white;
+	border-radius: 2px;
+	background: white;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	box-shadow: rgba(255, 255, 255, 0.2) 2px 2px 2px 2px;
+	z-index: 9;
+	/* animation: popup 3s ease-out forwards; */
+	animation: slideInAndUp 4s ease-out forwards;
+  }
+
+  

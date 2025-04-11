@@ -1,3 +1,4 @@
+import { set } from '@cloudinary/url-gen/actions/variable';
 import React, { createContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext();
@@ -7,6 +8,7 @@ const AuthProvider = ({ children }) => {
   const [recentSong,setRecentSong]=useState([])
   const [songs, setSongs] = useState([]);
   const [alertmessage, setAlertMessage] = useState("");
+  const [isRecentAdded, setIsRecentAdded] = useState(false);
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('userdata'));
@@ -14,6 +16,7 @@ const AuthProvider = ({ children }) => {
 
     const song = JSON.parse(localStorage.getItem('song'));
     if (song) setRecentSong(song);
+    setIsRecentAdded(true);
     fetchSongs();
 
   }, []);
@@ -53,6 +56,13 @@ const AuthProvider = ({ children }) => {
       });
       localStorage.setItem('song', JSON.stringify(recentSong));
   };
+
+  useEffect(() => {
+    if(isRecentAdded) {
+      localStorage.setItem('song', JSON.stringify(recentSong));
+    }
+  }, [recentSong, isRecentAdded]);
+
 
   
 

@@ -2,25 +2,11 @@ import { useEffect, useState } from "react";
 import '../CSS/Artist.css';
 
 const Artist = () => {
-    const [artists, setArtists] = useState([
-        { id: 0, name: "Arijit Singh", image: "../src/Image/headphone.jpg" },
-        { id: 1, name: "Ed Sheeran", image: "../src/Image/headphone.jpg" },
-        { id: 2, name: "Taylor Swift", image: "../src/Image/headphone.jpg" },
-        { id: 3, name: "The Weeknd", image: "../src/Image/headphone.jpg" },
-        { id: 4, name: "The Weeknd", image: "../src/Image/headphone.jpg" },
-        { id: 5, name: "The Weeknd", image: "../src/Image/headphone.jpg" },
-        { id: 6, name: "The Weeknd", image: "../src/Image/headphone.jpg" },
-        { id: 7, name: "The Weeknd", image: "../src/Image/headphone.jpg" },
-        { id: 8, name: "The Weeknd", image: "../src/Image/headphone.jpg" },
-        { id: 9, name: "The Weeknd", image: "../src/Image/headphone.jpg" },
-        { id: 10, name: "The Weeknd", image: "../src/Image/headphone.jpg" },
-        { id: 11, name: "The Weeknd", image: "../src/Image/headphone.jpg" },
-        // { id: 12, name: "The Weeknd", image: "https://shorturl.at/MBbM1" },
-    ]);
+    const [artists, setArtists] = useState([]);
 
     const [formData, setFormData] = useState({ name: "", image: null });
     const [editingId, setEditingId] = useState(null);
-    const [openMenu, setOpenMenu] = useState(null); // Track which menu is open
+    const [openMenu, setOpenMenu] = useState(null); 
     const [visible, setVisible] = useState(false); 
 
     useEffect(() => {
@@ -64,20 +50,20 @@ const Artist = () => {
             setFormData({ name: artist.name, image: null });
             setEditingId(artist.id);
             setVisible(true); 
-            setOpenMenu(null); // Close menu after edit
+            setOpenMenu(null); 
         }
         else {
             setFormData({ name: "", image: null });
             setEditingId(null);
             setVisible(true);
-            setOpenMenu(null); // Close menu after edit
+            setOpenMenu(null); 
         }
     };
 
     const handleDelete = async (id) => {
         await fetch(`http://localhost:8080/artists/${id}`, { method: "DELETE" });
         fetchArtists();
-        setOpenMenu(null); // Close menu after delete
+        setOpenMenu(null); 
     };
 
     

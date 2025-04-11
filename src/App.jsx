@@ -13,7 +13,7 @@ import Artist from './Component/Artist';
 import Loading from './Component/Loading';
 import DownloadSong from './Component/DownloadSong';
 const Playlist = lazy(() => import('./Component/Playlist'));
-const CreatePlaylist = lazy(() => import('./Component/CreatePlaylist'));
+const CreatePlaylistWrapper = lazy(() => import('./Component/CreatePlaylistWrapper'));
 const ProtectedRoute = lazy(() => import('./Context/ProtectedRouter'));
 
 
@@ -42,7 +42,7 @@ function App() {
 					},
 					{
 						path: "create-playlist",  
-						element: <CreatePlaylist />,
+						element: <CreatePlaylistWrapper />,
 					},
 					{
 						path: "artist",
