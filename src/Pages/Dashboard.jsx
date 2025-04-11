@@ -427,9 +427,33 @@ const Dashboard = () => {
 			}
 			onClick={togglePlaybackMode}
 			></i>
-			<i class={currentSong.likeSong?("bi bi-heart-fill"):("bi bi-heart")}></i>
+			<i
+			className={isDownloaded ? "bi bi-cloud-check" : "bi bi-cloud-arrow-down"}
+			onClick={toggleDownload}
+			style={{
+				cursor: "pointer",
+				fontSize: "1.7rem",
+				color: isDownloaded ? "green" : "gray",
+				marginLeft: "10px"
+			}}
+			></i>
+			<i className="bi bi-chevron-compact-right" onClick={togglePanel}></i>
 		</div>
 	</div>
+	<div className={`masterMask ${isPanelOpen ? "" : "open"}`}>
+		<div className="miniMusic">
+			<i className="bi bi-chevron-compact-left" onClick={togglePanel}></i>
+			<img src={currentSong.imgLink} alt={currentSong.name} className={`imgplay ${isPlaying ? "playing" : ""}`} />
+			<span></span>
+			<i
+			className={`bi ${isPlaying ? "bi-pause-fill" : "bi-play-fill"}`}
+			id="masterPlay"
+			onClick={togglePlay}
+			style={{ cursor: "pointer" }}
+			></i>
+		</div>
+	</div>
+
 </header>
   )
 }
