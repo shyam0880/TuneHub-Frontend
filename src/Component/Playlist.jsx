@@ -1,9 +1,9 @@
 import React ,{ useState, useEffect, useContext }from 'react';
-// import AuthContext from '../AutherContext/AuthContext';
+import AuthContext from '../Context/AuthContext';
 import { Outlet, useNavigate } from 'react-router-dom';
 
 const Playlist = ({ currSong, onSongSelect, checkPlay,setAlertMessage }) => {
-  // const { setAlertMessage } = useContext(AuthContext);
+  const { contextUser } = useContext(AuthContext);
   const [playlist, setPlayList] = useState([]);
   const [currentPlaylist, setCurrentPlaylist] = useState(null);
   const [playlistSongs, setPlaylistSongs] = useState(); //used to store songs when extract by playlist id
@@ -119,7 +119,7 @@ const Playlist = ({ currSong, onSongSelect, checkPlay,setAlertMessage }) => {
               {!hidePlaylist&&(
                 <>
                 <i class="bi bi-arrow-left-circle" onClick={() => setHidePlaylist(true)}></i>
-                <i class="bi bi-trash3" onClick={() => handleDeletePlaylist(currentPlaylist.id)}></i>
+                {contextUser?.role === "admin"&&(<i class="bi bi-trash3" onClick={() => handleDeletePlaylist(currentPlaylist.id)}></i>)}
                 </>
                 )}
               <i className="bi bi-play-circle-fill"></i>
@@ -136,7 +136,8 @@ const Playlist = ({ currSong, onSongSelect, checkPlay,setAlertMessage }) => {
                   </div>
                   <h5>
                     {play.name} <br />
-                    <div className="subtitle">{play.type}</div>
+                    <div className="subtitle">{play.genre}</div>
+                    {/* <div className="subtitle">{play.type}</div> */}
                   </h5>
                   <i className="bi bi-list-ul" onClick={() => handleSongPlaylist(play.id)}></i>
                   {/* <i
@@ -176,12 +177,12 @@ const Playlist = ({ currSong, onSongSelect, checkPlay,setAlertMessage }) => {
           </div>
           )}        
 		  </div>
-      <div className="createplaylist">
+      {contextUser?.role == "admin"&&(<div className="createplaylist">
         <div className='Btn'  onClick={()=>navigate("create-playlist")} alt="Create Playlist">
           <div class="sign"><i class="bi bi-plus"></i></div>
           <div class="text">Create</div>
         </div>
-      </div>
+      </div>)}
 		</div>
   )
 }
