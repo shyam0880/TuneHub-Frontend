@@ -7,6 +7,7 @@ const Login = () => {
 	const { login } = useContext(AuthContext);
 	const [loginMessage,setLoginMessage] = useState("");
 	const navigate = useNavigate();
+	const [viewPassword, setViewPassword] = useState(false);
 	const [user,setUser] = useState({
 		email:"",
 		password:""
@@ -61,13 +62,14 @@ const Login = () => {
 						required/>
 					</div>
 					<div className="form__input-group">
-						<input type="password" 
+						<input type= {viewPassword? "text":"password"} 
 						name="password" 
 						onChange={handleData}
 						value={user.password}
 						id="pass" 
 						placeholder="Enter your Password" 
 						required/>
+						<i class={viewPassword?"bi bi-eye-slash":"bi bi-eye"} onClick={()=>setViewPassword(!viewPassword)}></i>
 					</div>
 					<div className="submit_btn">
 						<button type="submit" >Sign In</button>

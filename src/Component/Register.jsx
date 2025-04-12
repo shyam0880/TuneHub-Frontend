@@ -3,6 +3,7 @@ import React, {useState, useEffect} from 'react';
 
 const Register = () => {
   const [messageStatus,setMessageStatus] = useState(false);
+  const [viewPassword, setViewPassword] = useState(false);
   const [passwordFeedback,setPasswordFeedback] = useState({
     length: false,
     uppercase: false,
@@ -109,13 +110,14 @@ const Register = () => {
             required/> 
           </div>
           <div className="form__input-group">
-            <input type="password" 
+            <input type= {viewPassword? "text":"password"}  
             name="password" 
             id="pass" maxLength="100" 
             value={user.password}
             onChange={handleChange}
             placeholder='Enter your password'
             required/> 
+            <i class={viewPassword?"bi bi-eye-slash":"bi bi-eye"} onClick={()=>setViewPassword(!viewPassword)}></i>
           </div>
           {messageStatus && <p style={{color:messageStatus?"Green":"red"}}>{message}</p>}
           {messageStatus && <>
