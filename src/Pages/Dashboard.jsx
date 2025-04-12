@@ -272,16 +272,6 @@ const Dashboard = () => {
 		setIsPanelOpen(!isPanelOpen);
 	};
 
-	useEffect(() => {
-		if (alertmessage) {
-			const timer = setTimeout(() => {
-				setAlertMessage(null); // Clear alert after 3 seconds
-			}, 3000);
-	
-			return () => clearTimeout(timer); // Cleanup timeout to prevent memory leak
-		}
-	}, [alertmessage]);
-
 	const isDownloaded = downloadedSong.some((s) => s.id === currentSong.id);
 
 	const toggleDownload = () => {
@@ -361,16 +351,7 @@ const Dashboard = () => {
 				<li className="noSong">No matching songs found</li>
 				)
 			}	
-	</div>)}
-
-	    {/* {true&&(<div className="alert" > */}
-	{alertmessage&&(
-	<div key={alertmessage + Date.now()} className="alert" >
-        <h3>{alertmessage}</h3>
-		{console.log(`alert message `+ alertmessage)}
-    </div>)}
-
-
+	</div>))}
 
 	<div key={home} class="song_side">
 		<nav>
