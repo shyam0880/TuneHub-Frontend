@@ -7,12 +7,17 @@ const AuthProvider = ({ children }) => {
   const [contextUser, setContextUser] = useState(undefined);
   const [recentSong,setRecentSong]=useState([])
   const [songs, setSongs] = useState([]);
-  const [alertmessage, setAlertMessage] = useState("");
+  const [alertData, setAlertData] = useState({
+    show: false,
+    status: true,
+    message: "",
+  });
   const [isRecentAdded, setIsRecentAdded] = useState(false);
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('userdata'));
     if (userData) setContextUser(userData);
+    else setContextUser(null);
 
     const song = JSON.parse(localStorage.getItem('song'));
     if (song) setRecentSong(song);
@@ -75,8 +80,7 @@ const AuthProvider = ({ children }) => {
             const data = await response.json();
             setSongs(data);
         } catch (err) {
-            // alert(err);
-            setAlertMessage(`auth alert `+err.message);
+            setAlertData({show: true, status: false, message:err.message});
         } 
     };
 
@@ -90,8 +94,9 @@ const AuthProvider = ({ children }) => {
       login, 
       logout,  
       greeting: getGreeting() , 
-      fetchSongs, alertmessage, 
-      setAlertMessage,
+      fetchSongs, 
+      alertData,
+      setAlertData,
       }}>
 
       {children}

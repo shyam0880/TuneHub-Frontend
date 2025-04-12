@@ -6,11 +6,9 @@ const CreatePlaylist = ({ editPlaylistData = null, onComplete }) => {
   const [popUp, setPopUp] = useState(false);
   const [playlistName, setPlaylistName] = useState('');
   const [playlistType, setPlaylistType] = useState('');
-  const [playlistImage, setPlaylistImage] = useState(null); // file
+  const [playlistImage, setPlaylistImage] = useState(null); 
   const [selectedSongs, setSelectedSongs] = useState(new Map());
-  const [playlistErrorMessage, setPlaylistErrorMessage] = useState('');
-  const [messageStatus, setMessageStatus] = useState(false);
-  const { songs } = useContext(AuthContext);
+  const { songs, setAlertData } = useContext(AuthContext);
 
   // 🌟 Pre-fill values if editing
   useEffect(() => {
@@ -40,7 +38,7 @@ const CreatePlaylist = ({ editPlaylistData = null, onComplete }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!playlistName.trim() || !playlistType.trim() || selectedSongs.size === 0) {
-      alert('Please fill out all required fields.');
+      setAlertData({ show: true, status: false, message:'Please fill out all required fields.'});
       return;
     }
 
@@ -65,36 +63,25 @@ const CreatePlaylist = ({ editPlaylistData = null, onComplete }) => {
       });
 
       if (response.ok) {
-        alert(await response.text());
+        setAlertData({show: true, status: true, message:await response.text()});
         setPlaylistName('');
         setPlaylistType('');
         setPlaylistImage(null);
         setSelectedSongs(new Map());
-        setMessageStatus(true);
-        setPlaylistErrorMessage(
-          editPlaylistData ? 'Playlist updated successfully' : 'Playlist added successfully'
-        );
+        setAlertData({ show: true, status: true, message: editPlaylistData ? 'Playlist updated successfully' : 'Playlist added successfully'});
         if (onComplete) onComplete(); // callback if passed
       } else {
-        setMessageStatus(false);
-        setPlaylistErrorMessage('Failed to submit playlist.');
+        setAlertData({ show: true, status: false, message: 'Failed to submit playlist.' });
       }
     } catch (error) {
       console.error('Error submitting playlist:', error);
-      alert('Something went wrong!');
+      setAlertData({show: true, status: false, message:'Something went wrong!'});
     }
   };
 
   const handleImageChange = (event) => {
     setPlaylistImage(event.target.files[0]);
   };
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setPlaylistErrorMessage('');
-    }, 3000);
-    return () => clearTimeout(timeout);
-  }, [playlistErrorMessage]);
 
   return (
     <div className="popular_song">
@@ -140,11 +127,6 @@ const CreatePlaylist = ({ editPlaylistData = null, onComplete }) => {
 
                 <input type="submit" value={editPlaylistData ? 'UPDATE PLAYLIST' : 'ADD PLAYLIST'} />
                 <br />
-                {playlistErrorMessage && (
-                  <p style={{ color: messageStatus ? 'green' : 'red', fontSize: '20px' }}>
-                    {playlistErrorMessage}
-                  </p>
-                )}
               </div>
             </div>
           )}

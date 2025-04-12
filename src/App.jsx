@@ -4,7 +4,6 @@ import React, { lazy, Suspense } from 'react';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { AuthProvider } from "./Context/AuthContext"
 import { DataProvider } from './Context/DataContext';
-import ReactLoading from 'react-loading';
 const Home = lazy(() => import('./Pages/Home'));
 const Dashboard = lazy(() => import('./Pages/Dashboard'));
 const Payment = lazy(()=>import('./Payment/Payment'))
@@ -15,6 +14,7 @@ import DownloadSong from './Component/DownloadSong';
 const Playlist = lazy(() => import('./Component/Playlist'));
 const CreatePlaylistWrapper = lazy(() => import('./Component/CreatePlaylistWrapper'));
 const ProtectedRoute = lazy(() => import('./Context/ProtectedRouter'));
+import AlertMessage from '../src/Component/AlertMessage';
 
 
 
@@ -69,6 +69,7 @@ function App() {
                 </div> 
         }>
 			<RouterProvider router={router} />
+			<AlertMessage />
 		</Suspense>
 		</DataProvider>
 	</AuthProvider>

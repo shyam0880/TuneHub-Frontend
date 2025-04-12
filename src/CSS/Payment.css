@@ -10,6 +10,13 @@
 	font-size: 1.1rem;
 	margin-bottom: 20px;
 }
+
+.payment .warning{
+	font-size: 1.2rem;
+	font-family: 'Montserrat', sans-serif;
+	text-align: center;
+	color: red;
+}
   
 .payment .layout {
 	display: flex;

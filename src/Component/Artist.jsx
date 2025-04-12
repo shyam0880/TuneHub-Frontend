@@ -120,7 +120,7 @@ const Artist = () => {
                         </li>
                     ))
                 ) : (
-                    <li className="noArtist">No artists</li>
+                    <li className="noArtist"></li>
                 )}
             </ul>
         </div>

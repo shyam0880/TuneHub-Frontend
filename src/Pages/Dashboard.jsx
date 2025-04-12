@@ -8,7 +8,7 @@ import Playlist from '../Component/Playlist';
 
 
 const Dashboard = () => {
-	const { songs, setSongs, contextUser, addToRecent, recentSong ,greeting, logout, alertmessage, setAlertMessage } = useContext(AuthContext);
+	const { songs, setSongs, contextUser, addToRecent, recentSong ,greeting, logout, setAlertData } = useContext(AuthContext);
 	const {
 		currentSong,
 		setCurrentSong,
@@ -36,8 +36,7 @@ const Dashboard = () => {
 			navigate("/");
 			return;
 		}
-	
-		if (!contextUser?.premium && contextUser?.role === "customer") {
+		else if (!contextUser?.premium && contextUser?.role === "customer") {
             if (location.pathname !== "/dashboard/payment") {
                 navigate("/dashboard/payment");
             }
@@ -151,15 +150,6 @@ const Dashboard = () => {
 		};
 	}, [playbackMode]);
 
-	
-	// const togglePlay = () => {
-	// 	if (isPlaying) {
-	// 		audioRef.current.pause();
-	// 	} else {
-	// 		audioRef.current.play();
-	// 	}
-	// 	setIsPlaying(!isPlaying);
-	// };
 
 	const handleDelete = async(id)=>{
 		try{
@@ -168,17 +158,16 @@ const Dashboard = () => {
 			});
 			
 			if (!response.ok) {
-				throw new Error("Failed to fetch songs");
+				setAlertData({ show: true, status: false, message:"Failed to fetch songs"});
             }
-			// alert(await response.text());
-			setAlertMessage(await response.text());
+			setAlertData({show: true, status: true, message:await response.text()});
 
 			setSongs((prevSongs) => prevSongs.filter(song => song.id !== id));
             setShowDelete(null);
 
 		}
 		catch(err){
-			alert(err);
+			setAlertData({ show: true, status: false, message:err});
 		}
 	}
             
@@ -218,16 +207,8 @@ const Dashboard = () => {
     	setCurrentIndex(1);	
     };
 
-	// const handlePlaylistSong = (songs, index) => {
-	// 	setSongList(songs);
-	// 	setCurrentIndex(index);
-	// 	setCurrentSong(songs[index]);
-	// 	setIsPlaying(true);
-	// 	addToRecent(songs[index]);
-	// 	togglePlay();
-	// };
 
-	// // Navigate Forward
+	// Navigate Forward
 	const handleNext = () => {
 		if (songList.length > 0) {
 			const nextIndex = (currentIndex + 1) % songList.length;
@@ -238,7 +219,7 @@ const Dashboard = () => {
 	};
 
 
-	// // Navigate Backward
+	// Navigate Backward
 	const handlePrevious = () => {
 		if (songList.length > 0 && currentIndex > 0) {
 			const prevIndex = currentIndex - 1;
@@ -303,7 +284,6 @@ const Dashboard = () => {
 		<div class="playlist">
 			<h4 className={(home===0 && !isChildRouteActive)?"active":""} onClick={()=>{handleHome(0)}}> Home</h4>
 			<h4 className={(home===1 && !isChildRouteActive)?"active":""} onClick={()=>{handleHome(1)}}> My Liberary</h4>
-			{/* <h4><Link to="Playlist">Go to Playlist</Link> </h4> */}
 
 			<br/>
 			<h4 className={(location.pathname==="/dashboard/downloaded")?"active":""} onClick={() => navigate("/dashboard/downloaded")}> Downloaded Song</h4>
@@ -321,6 +301,7 @@ const Dashboard = () => {
     {popUp&&(<div className="popup" >
         <div className="contant">
         <i class="bi bi-x-lg" onClick={()=>{setPopUp(false)}}></i>
+		
 			<AddMusic
 				editingSong={editingSong}
 				setEditingSong={setEditingSong}
@@ -330,7 +311,7 @@ const Dashboard = () => {
     </div>)}
 
 
-	{search.trim() !== "" && (
+	{(contextUser.premium || contextUser.role === "admin")&&(search.trim() !== "" && (
 		<div class="menuSong">
 		{filterSongs.length>0?(
 			filterSongs.map((song,index) => (
@@ -527,7 +508,7 @@ const Dashboard = () => {
 					</div>
 				</div>):
 			(home===1 && (contextUser.premium || contextUser?.role === "admin"))&&(
-				<Playlist currSong={currentSong} onSongSelect={handlePlaylistSong} checkPlay={isPlaying} setAlertMessage={setAlertMessage}/>)
+				<Playlist currSong={currentSong} onSongSelect={handlePlaylistSong} checkPlay={isPlaying} setAlertData={setAlertData}/>)
 		)}
 	</div>
 
@@ -543,7 +524,7 @@ const Dashboard = () => {
 			{currentSong.name}
 			<div className="subtitle">{currentSong.artist}</div>
 		</h5>
-		<div className="icon">
+		<div className="bicon">
 			<i className="bi shuffle bi-music-note-beamed"></i>
 			<i className="bi bi-skip-start-fill" onClick={() => handlePrevious()}></i>
 			<i
@@ -577,7 +558,7 @@ const Dashboard = () => {
 			onChange={handleVolume}
 			/>
 		</div>
-		<div className="icon">
+		<div className="bicon">
 			<i
 			className={
 				playbackMode === "normal"

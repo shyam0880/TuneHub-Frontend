@@ -2,7 +2,7 @@ import React ,{ useState, useEffect, useContext }from 'react';
 import AuthContext from '../Context/AuthContext';
 import { Outlet, useNavigate } from 'react-router-dom';
 
-const Playlist = ({ currSong, onSongSelect, checkPlay,setAlertMessage }) => {
+const Playlist = ({ currSong, onSongSelect, checkPlay,setAlertData }) => {
   const { contextUser } = useContext(AuthContext);
   const [playlist, setPlayList] = useState([]);
   const [currentPlaylist, setCurrentPlaylist] = useState(null);
@@ -16,8 +16,7 @@ const Playlist = ({ currSong, onSongSelect, checkPlay,setAlertMessage }) => {
 
       if(!response.ok){
         const errorMessage = await response.text();
-				// throw new Error(errorMessage || "PlayList Load Failed");
-        setAlertMessage(errorMessage || "PlayList Load Failed");
+        setAlertData({show: true, status: false, message:errorMessage || "PlayList Load Failed"});
       }
 
       const data = await response.json();
@@ -25,8 +24,7 @@ const Playlist = ({ currSong, onSongSelect, checkPlay,setAlertMessage }) => {
 
     }
     catch(err){
-      // alert(err);
-      setAlertMessage(err.message);
+      setAlertData({show: true, status: false, message:err.message});
     }
   };
 
@@ -48,8 +46,7 @@ const Playlist = ({ currSong, onSongSelect, checkPlay,setAlertMessage }) => {
 
     }
     catch(err){
-      // alert(err);
-      setAlertMessage(err.message);
+      setAlertData({show: true, status: false, message:err.message});
     }
 
   }
@@ -61,8 +58,7 @@ const Playlist = ({ currSong, onSongSelect, checkPlay,setAlertMessage }) => {
       setCurrentPlaylist(foundPlaylist);
       setHidePlaylist(false)
     } else {
-      // alert('Playlist not found');
-      setAlertMessage('Playlist not found');
+      setAlertData({show: true, status: false, message:'Playlist not found'});
     }
   };
 
@@ -73,14 +69,14 @@ const Playlist = ({ currSong, onSongSelect, checkPlay,setAlertMessage }) => {
         method: 'DELETE'
       });
       if (response.ok) {
-        setAlertMessage('Playlist deleted successfully');
+        setAlertData({show: true,status: true, message:'Playlist deleted successfully'});
         setHidePlaylist(true);
         fetchPlaylist();
       } else {
-        setAlertMessage(await response.text());
+        setAlertData({show: true,status: false, message:await response.text()});
       }
     } catch (err) {
-      setAlertMessage('Failed to delete playlist');
+      setAlertData({show: true,status: false, message:'Failed to delete playlist'});
     }
   };
 
@@ -91,15 +87,15 @@ const Playlist = ({ currSong, onSongSelect, checkPlay,setAlertMessage }) => {
         method: 'PUT'
       });
       if (response.ok) {
-        setAlertMessage('Song removed from playlist');
+        setAlertData({show: true, status: true, message:'Song removed from playlist'});
         const updatedPlaylist = { ...currentPlaylist };
         updatedPlaylist.songs = updatedPlaylist.songs.filter(song => song.id !== songId);
         setCurrentPlaylist(updatedPlaylist);
       } else {
-        setAlertMessage(await response.text());
+        setAlertData({show: true, status: false, message:await response.text()});
       }
     } catch (err) {
-      setAlertMessage('Error removing song');
+      setAlertData({show: true, status: false, message:'Error removing song'});
     }
   };
 
@@ -108,8 +104,7 @@ const Playlist = ({ currSong, onSongSelect, checkPlay,setAlertMessage }) => {
     <div class="box">		
 			<div className="popular_song">
           <div className="newupdate">
-            <img src={hidePlaylist ?'../src/Image/grass.jpg':currentPlaylist.imgLink} alt='image'className='image'/>
-            {/* <img src={hidePlaylist ?'https://shorturl.at/I8fN3':currentPlaylist.imgLink} alt='image'/> */}
+            <img src={hidePlaylist ?'https://res.cloudinary.com/dvwcy1jab/image/upload/v1740661173/grass_abv3mp.jpg':currentPlaylist.imgLink} alt='image'className='image'/>
             <div className="addplaylist">
               <div className="sideplay">
               <h2>{hidePlaylist ? "Playlist" : (currentPlaylist.name || "Playlist not found")}</h2>

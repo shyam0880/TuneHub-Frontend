@@ -4,8 +4,7 @@ import  AuthContext  from "../Context/AuthContext";
 
 
 const Login = () => {
-	const { login } = useContext(AuthContext);
-	const [loginMessage,setLoginMessage] = useState("");
+	const { login , setAlertData} = useContext(AuthContext);
 	const navigate = useNavigate();
 	const [viewPassword, setViewPassword] = useState(false);
 	const [user,setUser] = useState({
@@ -17,7 +16,7 @@ const Login = () => {
 		const{ name, value} = e.target;
 		setUser({
 			...user,
-			[name]: value,
+			[name]: value.trim(),
 		})
 	}
 
@@ -33,16 +32,20 @@ const Login = () => {
 				});
 
 				if (!response.ok) {
-					const errorMessage = await response.text(); // Read error message from server
-					throw new Error(errorMessage || "Login failed");
+					const errorMessage = await response.text();
+					setAlertData({ show: true, status: false, message: errorMessage || "Login failed"});
+					console.log(errorMessage);
+					return;
 				}
 
 				const data = await response.json(); 
 				login(data);
+				setAlertData({ show: true, status: true, message: "Login Successful"});
 				navigate("/dashboard");
 
 		} catch (err) {
-		setLoginMessage(err.message); 
+			setAlertData({ show: true, status: false, message:err.message });
+			console.log(err);
 		}
 
 	}
@@ -75,7 +78,6 @@ const Login = () => {
 						<button type="submit" >Sign In</button>
 					</div>
 				</form>
-				{loginMessage && <p style={{color:"red"}}>{loginMessage}</p>}
 				<p class="p line">Or With</p>
 				<div className="flex-row">
 					<button className="btn google">

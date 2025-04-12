@@ -6,7 +6,6 @@ const DownloadSong = () => {
     const {
       downloadedSong,
       currentSong,
-		  setCurrentSong,
       handlePlaylistSong,
 		  isPlaying,
     } = useContext(DataContext);

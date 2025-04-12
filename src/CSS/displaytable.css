@@ -350,7 +350,7 @@ header .master_play h5 .subtitle {
 	white-space: nowrap;
 }
 
-header .master_play .icon {
+header .master_play .bicon {
 	font-size: 20px;
 	color: #fff;
 	margin: 0px 20px 0px 40px;
@@ -358,13 +358,13 @@ header .master_play .icon {
 	display: flex;
 	align-items: center;
 }
-header .master_play .icon .bi {
+header .master_play .bicon .bi {
 	cursor: pointer;
 	outline: none;
 	margin: 0 15px;
 }
 
-header .master_play .icon .shuffle {
+header .master_play .bicon .shuffle {
 	font-size: 17px;
 	margin-right: 10px;
 	width: 18px;
@@ -373,7 +373,7 @@ header .master_play .icon .shuffle {
 	align-items: center;
 }
 
-header .master_play .icon .bi:nth-child(3) {
+header .master_play .bicon .bi:nth-child(3) {
 	border: 1px solid rgb(105,105,105,.1);
 	border-radius: 50%;
 	padding: 1px 5px 0px 7px;

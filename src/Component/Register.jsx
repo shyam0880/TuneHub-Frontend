@@ -1,7 +1,9 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
+import  AuthContext  from "../Context/AuthContext";
 
 
 const Register = () => {
+  const { setAlertData} = useContext(AuthContext);
   const [messageStatus,setMessageStatus] = useState(false);
   const [viewPassword, setViewPassword] = useState(false);
   const [passwordFeedback,setPasswordFeedback] = useState({
@@ -11,7 +13,7 @@ const Register = () => {
     digit: false,
     specialChar: false
   });
-  const [message,setMessage] = useState("");
+
   const [user, setUser] = useState({
     username: '',
     email: '',
@@ -38,7 +40,6 @@ const Register = () => {
       specialChar: /[@$!%*?&]/.test(value)
     });
   }
-
   setUser({ ...user, [name]: value });
   }
 
@@ -54,10 +55,10 @@ const Register = () => {
       });
       const textResponse = await response.text();
       if(!response.ok){
-        setMessage(textResponse);
+        setAlertData({ show: true, status: false, message:textResponse});
+        return;
       }
-      setMessageStatus(true);
-      setMessage(textResponse);
+      setAlertData({ show: true, status: true, message:textResponse});
       setUser({
         username: '',
         email: '',
@@ -66,25 +67,11 @@ const Register = () => {
         role: '',
         address: ''
       });
- 
-
     }
     catch(e){
-      setMessage("Something went wrong!");
+      setAlertData({ show: true, status: false, message: e.message || "Something went wrong!"});
     }
   }
-
-  useEffect(() => {
-    if (message) {
-      const timer = setTimeout(() => {
-        setMessage(""),
-        setMessageStatus(false);
-      }, 3000);
-      return () => clearTimeout(timer); 
-    }
-  }, [message]);
-  
-
 
   return (
     <div className="container" >
@@ -119,7 +106,6 @@ const Register = () => {
             required/> 
             <i class={viewPassword?"bi bi-eye-slash":"bi bi-eye"} onClick={()=>setViewPassword(!viewPassword)}></i>
           </div>
-          {messageStatus && <p style={{color:messageStatus?"Green":"red"}}>{message}</p>}
           {messageStatus && <>
             <p style={{color:passwordFeedback.length?"Green":"red"}}>Minimum 6 characters</p>
             <p style={{color:passwordFeedback.uppercase?"Green":"red"}}>At least 1 uppercase letter</p>

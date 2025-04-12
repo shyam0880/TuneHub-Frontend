@@ -8,13 +8,15 @@ const Payment = () => {
 
     const [orderId, setOrderId] = useState("");
     const [razorpayKey, setRazorpayKey] = useState("");
-    const { contextUser, setContextUser } = useContext(AuthContext);
+    const { contextUser, login, setAlertData } = useContext(AuthContext);
     const navigate = useNavigate();
 
-    if (contextUser.premium || contextUser.role === "admin") {
-        navigate("/");
-        return;
-    }
+    useEffect(() => {
+        if (contextUser.premium || contextUser.role === "admin") {
+            navigate("/");
+        }
+    }, [contextUser, navigate]);
+    
 
     // Fetch Razorpay Key from Backend
     useEffect(() => {
@@ -42,29 +44,41 @@ const Payment = () => {
                 body: JSON.stringify({ 
                     amount:amount, 
                     email:contextUser.email
-                }), // ✅ Sending email in request
+                }), 
             });
             if (!response.ok) {
-                throw new Error(`Failed to create order: ${response.statusText}`);
+                setAlertData({
+					show: true,
+					status: false,
+					message:`Failed to create order: ${response.statusText}`});
             }
 
             const data = await response.json();
 
             if (!data.order_id) {
-                throw new Error("Invalid order response from server.");
+                setAlertData({
+					show: true,
+					status: false,
+					message:"Invalid order response from server."});
             }
 
             setOrderId(data.order_id);
             handlePayment(data);
         } catch (error) {
-            alert("Failed to create order. Please try again.");
+            setAlertData({
+                show: true,
+                status: false,
+                message:"Failed to create order. Please try again."});
         }
     };
 
  // Handle Payment with Razorpay
     const handlePayment = (orderData) => {
         if (!razorpayKey) {
-            alert("Razorpay key not loaded. Please try again.");
+            setAlertData({
+                show: true,
+                status: false,
+                message:"Kindely Refresh the page and Please try again."});
             return;
         }
 
@@ -92,12 +106,43 @@ const Payment = () => {
         rzp1.open();
     };
 
-
-
+    const verifyPayment = async (response, amount) => {
+        try {
+            const updateRes = await fetch("http://localhost:8080/api/payment/make-premium", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email: contextUser.email }),
+            });
+    
+            if (updateRes.ok) {
+                const updatedUser = await updateRes.json();
+                login(updatedUser);
+                setAlertData({
+					show: true,
+					status: true,
+					message:"Payment successful! You are now a premium user."});
+                navigate("/");
+            } else {
+                setAlertData({
+					show: true,
+					status: false,
+					message:"Failed to update user role."});
+            }
+        } catch (error) {
+            setAlertData({
+                show: true,
+                status: false,
+                message:"An error occurred."});
+        }
+    };
+ 
     return (
         <div className="payment">            
                 <h1>Listen without limits. Try 1 month of Premium Individual for free.</h1>
                 <p>Only Rs 5000/month after. Cancel anytime. </p>
+                <p className="warning">********** USE UPI FOR PAYMENT (USE success@razorpay IN UPI) *********</p>
                 <section className="layout">
                     <div className="grow">
                         <div className="info">
