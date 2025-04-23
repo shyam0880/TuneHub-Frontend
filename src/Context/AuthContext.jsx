@@ -13,6 +13,9 @@ const AuthProvider = ({ children }) => {
     message: "",
   });
   const [isRecentAdded, setIsRecentAdded] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState('');
+  const [onConfirmAction, setOnConfirmAction] = useState(() => () => {});
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('userdata'));
@@ -69,6 +72,18 @@ const AuthProvider = ({ children }) => {
   }, [recentSong, isRecentAdded]);
 
 
+  const openConfirmDialog = (message, onConfirm) => {
+    setConfirmMessage(message);
+    setOnConfirmAction(() => () => {
+      onConfirm();
+      setConfirmOpen(false);
+    });
+    setConfirmOpen(true);
+  };
+
+  const cancelConfirmDialog = () => {
+    setConfirmOpen(false);
+  };
   
 
   const fetchSongs = async () => {
@@ -97,6 +112,11 @@ const AuthProvider = ({ children }) => {
       fetchSongs, 
       alertData,
       setAlertData,
+      openConfirmDialog,
+      cancelConfirmDialog,
+      confirmOpen,
+      confirmMessage,
+      onConfirmAction,
       }}>
 
       {children}
