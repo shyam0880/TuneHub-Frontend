@@ -15,6 +15,7 @@ const Playlist = lazy(() => import('./Component/Playlist'));
 const CreatePlaylistWrapper = lazy(() => import('./Component/CreatePlaylistWrapper'));
 const ProtectedRoute = lazy(() => import('./Context/ProtectedRouter'));
 import AlertMessage from '../src/Component/AlertMessage';
+import ConfirmDialog from './Component/ConfirmDialog';
 
 
 
@@ -70,6 +71,7 @@ function App() {
         }>
 			<RouterProvider router={router} />
 			<AlertMessage />
+			<ConfirmDialog />
 		</Suspense>
 		</DataProvider>
 	</AuthProvider>

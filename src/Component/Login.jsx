@@ -45,7 +45,6 @@ const Login = () => {
 
 		} catch (err) {
 			setAlertData({ show: true, status: false, message:err.message });
-			console.log(err);
 		}
 
 	}

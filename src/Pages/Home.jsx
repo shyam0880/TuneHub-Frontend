@@ -21,9 +21,6 @@ const Home = () => {
 
     const [state,setState] = useState(0);
 
-
-
-
   return (
     <div className="home">
 			<div className="home1">

@@ -3,7 +3,7 @@ import AuthContext from '../Context/AuthContext';
 import { Outlet, useNavigate } from 'react-router-dom';
 
 const Playlist = ({ currSong, onSongSelect, checkPlay,setAlertData }) => {
-  const { contextUser } = useContext(AuthContext);
+  const { contextUser, openConfirmDialog  } = useContext(AuthContext);
   const [playlist, setPlayList] = useState([]);
   const [currentPlaylist, setCurrentPlaylist] = useState(null);
   const [playlistSongs, setPlaylistSongs] = useState(); //used to store songs when extract by playlist id
@@ -99,6 +99,10 @@ const Playlist = ({ currSong, onSongSelect, checkPlay,setAlertData }) => {
     }
   };
 
+  const handleDeleteClick = (id) => {
+    openConfirmDialog("Are you sure you want to delete this playlist?", () => handleDeletePlaylist(id));
+  };
+
   
   return (
     <div class="box">		
@@ -114,7 +118,7 @@ const Playlist = ({ currSong, onSongSelect, checkPlay,setAlertData }) => {
               {!hidePlaylist&&(
                 <>
                 <i class="bi bi-arrow-left-circle" onClick={() => setHidePlaylist(true)}></i>
-                {contextUser?.role === "admin"&&(<i class="bi bi-trash3" onClick={() => handleDeletePlaylist(currentPlaylist.id)}></i>)}
+                {contextUser?.role === "admin"&&(<i class="bi bi-trash3" onClick={() => handleDeleteClick(currentPlaylist.id)}></i>)}
                 </>
                 )}
               <i className="bi bi-play-circle-fill"></i>

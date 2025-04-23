@@ -9,7 +9,7 @@ const AlertMessage = () => {
     if (alertData.show) {
       const timer = setTimeout(() => {
         setAlertData((prev) => ({ ...prev, show: false }));
-      }, 5000);
+      }, 3000);
       return () => clearTimeout(timer);
     }
   }, [alertData]);

@@ -5,10 +5,11 @@ import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import '../CSS/displaytable.css';
 import AddMusic from '../Component/AddMusic';
 import Playlist from '../Component/Playlist';
+import ProfileCard from '../Component/ProfileCard';
 
 
 const Dashboard = () => {
-	const { songs, setSongs, contextUser, addToRecent, recentSong ,greeting, logout, setAlertData } = useContext(AuthContext);
+	const { songs, setSongs, contextUser, addToRecent, recentSong ,greeting, logout, setAlertData, openConfirmDialog  } = useContext(AuthContext);
 	const {
 		currentSong,
 		setCurrentSong,
@@ -66,6 +67,7 @@ const Dashboard = () => {
 
 	const [isPanelOpen, setIsPanelOpen] = useState(true);
 	const [openMenu, setOpenMenu] = useState(null);
+	const [profileUpdate, setProfileUpdate] = useState(false);
 
 
 	const togglePlaybackMode = () => {
@@ -276,6 +278,13 @@ const Dashboard = () => {
 	};
 
 	// const likeSong = songs.filter((song) => song.likeSong === true);
+	const handleDeleteClick = (id) => {
+		openConfirmDialog("Are you sure you want to delete this song?", () => handleDelete(id));
+	};
+
+	const handleDeleteArtist = (id) => {
+		openConfirmDialog("Are you sure you want to delete this artist?", () => handleDelete(id));
+	};
 
   return (
     <header>
@@ -294,7 +303,7 @@ const Dashboard = () => {
 			{contextUser?.role == "admin"&&(
 				<h4 className={(location.pathname==="/dashboard/artist")?"active":""} onClick={() => navigate("/dashboard/artist")}>Artist</h4>
 			)}
-			<h5 onClick={()=>handleLogout()}>Logout <i class="bi bi-box-arrow-right" ></i></h5>
+			{/* <h5 onClick={()=>handleLogout()}>Logout <i class="bi bi-box-arrow-right" ></i></h5> */}
 		</div>
 		
 	</div>
@@ -360,9 +369,11 @@ const Dashboard = () => {
 				</span>
 			</div>
 			<div class="user">
-				<img src={contextUser.image} alt=""/>
+				<img src={contextUser.image} alt="" onClick={()=>setProfileUpdate(!profileUpdate)}/>
+				{profileUpdate&&(<ProfileCard contextUser={contextUser}/>)}
 			</div>
 		</nav>
+		
 		{isChildRouteActive?(
 			<div className="box">
 				<Outlet />
@@ -439,7 +450,7 @@ const Dashboard = () => {
 										{song.name} <br />
 										<div className="subtitle">{song.artist}</div>
 									</h5>
-									<div className="options">
+									{contextUser.role==="admin"&&(<div className="options">
 									<i 
 										className="bi bi-three-dots-vertical" 
 										onClick={(e) =>{
@@ -450,14 +461,14 @@ const Dashboard = () => {
 									></i>
 										{showDelete === song.id && (
 										<div className="options-menu">
-											<button className="testButton" onClick={() => handleDelete(song.id)}>Delete</button>
+											<button className="testButton" onClick={() => handleDeleteClick(song.id)}>Delete</button>
 											<button className="testButton" onClick={() => handleEdit(song)}>Edit</button>
 									  	</div>
 									)}
 										<i className={`bi ${currentSong.id === song.id && isPlaying ? "bi-pause-circle-fill" : "bi-play-circle-fill"}`} 
 											onClick={() => handlePlaylistSong(songs, index)}
 										></i>
-									</div>
+									</div>)}
 									</li>
 							)
 								)):(
@@ -493,7 +504,7 @@ const Dashboard = () => {
 												{openMenu === artist.id && (
 													<div className="options-menu" onClick={(e) => e.stopPropagation()}>
 														<button onClick={() => handleEdit(artist)}>Edit</button>
-														<button onClick={() => handleDelete(artist.id)}>Delete</button>
+														<button onClick={() => handleDeleteArtist(artist.id)}>Delete</button>
 													</div>
 												)}
 											</div>)}
