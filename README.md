@@ -3,7 +3,10 @@
 [![GitHub](https://img.shields.io/badge/GitHub-TuneHub--Frontend-181717?style=for-the-badge&logo=github)](https://github.com/shyam0880/TuneHub-Frontend)
 [![LinkedIn](https://img.shields.io/badge/Connect-Shyam%20Lal%20Kafle-0A66C2?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/shyam0880/)
 
-A modern, responsive frontend application for a music streaming platform, built with **React**. It offers users a seamless music listening experience with playlist management, song downloads, artist browsing, and a centralized music player — all through an intuitive interface.
+A modern, responsive frontend application for a music streaming platform, built with **React**. It offers users a seamless music listening experience with playlist management, song downloads, artist browsing, and a centralised music player — all through an intuitive interface.
+
+👉 Check out the [TuneHub Backend](https://github.com/shyam0880/Tunehub) for the REST API and business logic.
+
 
 ---
 
@@ -94,6 +97,35 @@ src/
 ├── App.css                 # Global css
 └── main.jsx                # Application entry point
 ```
+## 📸 Screenshots / Demo Images
+
+| Home Page | Playlist View |
+|-----------|----------------|
+| ![Home1](https://github.com/shyam0880/TuneHub-Frontend/blob/main/Demo%20Image/Admin%20home%201.png?raw=true) | ![Playlist](https://github.com/shyam0880/TuneHub-Frontend/blob/main/Demo%20Image/Playlist.png?raw=true) |
+| ![Home2](https://github.com/shyam0880/TuneHub-Frontend/blob/main/Demo%20Image/Admin%20home%202.png?raw=true) | ![PlaylistSongs](https://github.com/shyam0880/TuneHub-Frontend/blob/main/Demo%20Image/Songs%20in%20playlist.png?raw=true) |
+
+| Add Song | Downloaded Songs |
+|----------|------------------|
+| ![AddSong](https://github.com/shyam0880/TuneHub-Frontend/blob/main/Demo%20Image/Add%20Song.png?raw=true) | ![Downloaded](https://github.com/shyam0880/TuneHub-Frontend/blob/main/Demo%20Image/Download%20song.png?raw=true) |
+
+| Premium Home | Non-Premium + Payment |
+|--------------|------------------------|
+| ![Premium](https://github.com/shyam0880/TuneHub-Frontend/blob/main/Demo%20Image/Premium%20home.png?raw=true) | ![NonPremium](https://github.com/shyam0880/TuneHub-Frontend/blob/main/Demo%20Image/non%20premium.png?raw=true) |
+
+| Create Playlist 1 | Create Playlist 2 |
+|-------------------|-------------------|
+| ![Create1](https://github.com/shyam0880/TuneHub-Frontend/blob/main/Demo%20Image/create%20Playlist%201.png?raw=true) | ![Create2](https://github.com/shyam0880/TuneHub-Frontend/blob/main/Demo%20Image/create%20Playlist%202.png?raw=true) |
+
+| Mini Player | Profile Card |
+|-------------|--------------|
+| ![MiniPlayer](https://github.com/shyam0880/TuneHub-Frontend/blob/main/Demo%20Image/miniPlayer.png?raw=true) | ![Profile](https://github.com/shyam0880/TuneHub-Frontend/blob/main/Demo%20Image/profile.png?raw=true) |
+
+| 🎭 Artist View |
+|----------------|
+| ![Artist](https://github.com/shyam0880/TuneHub-Frontend/blob/main/Demo%20Image/Artist.png?raw=true) |
+
+
+
 
 
 
