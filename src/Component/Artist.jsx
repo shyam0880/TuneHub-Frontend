@@ -1,7 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import '../CSS/Artist.css';
+import AuthContext from "../Context/AuthContext";
 
 const Artist = () => {
+    const { apiUrl } = useContext(AuthContext);
+
     const [artists, setArtists] = useState([]);
 
     const [formData, setFormData] = useState({ name: "", image: null });
@@ -14,7 +17,7 @@ const Artist = () => {
     }, []);
 
     const fetchArtists = async () => {
-        const res = await fetch("http://localhost:8080/artists");
+        const res = await fetch(`${apiUrl}/artists`);
         const data = await res.json();
         setArtists(data);
     };
@@ -36,7 +39,7 @@ const Artist = () => {
         }
 
         const method = editingId ? "PUT" : "POST";
-        const url = editingId ? `http://localhost:8080/artists/${editingId}` : "http://localhost:8080/artists";
+        const url = editingId ? `${apiUrl}/artists/${editingId}` : `${apiUrl}/artists`;
 
         await fetch(url, { method, body: formDataToSend });
 
@@ -61,7 +64,7 @@ const Artist = () => {
     };
 
     const handleDelete = async (id) => {
-        await fetch(`http://localhost:8080/artists/${id}`, { method: "DELETE" });
+        await fetch(`${apiUrl}/artists/${id}`, { method: "DELETE" });
         fetchArtists();
         setOpenMenu(null); 
     };

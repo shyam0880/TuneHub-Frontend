@@ -8,7 +8,7 @@ const Payment = () => {
 
     const [orderId, setOrderId] = useState("");
     const [razorpayKey, setRazorpayKey] = useState("");
-    const { contextUser, login, setAlertData } = useContext(AuthContext);
+    const { contextUser, login, setAlertData, apiUrl } = useContext(AuthContext);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -22,7 +22,7 @@ const Payment = () => {
     useEffect(() => {
         const fetchRazorpayKey = async () => {
             try {
-                const response = await fetch("http://localhost:8080/api/payment/razorpay-key"); // API call to backend
+                const response = await fetch(`${apiUrl}/api/payment/razorpay-key`); // API call to backend
                 const data = await response.json();
                 setRazorpayKey(data.razorpayKey); // Save key
             } catch (error) {
@@ -36,7 +36,7 @@ const Payment = () => {
    // Create Order on Backend
    const createOrder = async (amount) => {
         try{
-            const response = await fetch("http://localhost:8080/api/payment/create-order", {
+            const response = await fetch(`${apiUrl}/api/payment/create-order`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -108,7 +108,7 @@ const Payment = () => {
 
     const verifyPayment = async (response, amount) => {
         try {
-            const updateRes = await fetch("http://localhost:8080/api/payment/make-premium", {
+            const updateRes = await fetch(`${apiUrl}/api/payment/make-premium`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",

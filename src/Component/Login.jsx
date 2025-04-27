@@ -4,7 +4,7 @@ import  AuthContext  from "../Context/AuthContext";
 
 
 const Login = () => {
-	const { login , setAlertData} = useContext(AuthContext);
+	const { login , setAlertData, apiUrl} = useContext(AuthContext);
 	const navigate = useNavigate();
 	const [viewPassword, setViewPassword] = useState(false);
 	const [user,setUser] = useState({
@@ -23,7 +23,7 @@ const Login = () => {
 	const handleLogin=async(e)=>{
 		e.preventDefault();
 		try{
-			const response = await fetch('http://localhost:8080/signin', {
+			const response = await fetch(`${apiUrl}/signin`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',

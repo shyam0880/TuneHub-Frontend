@@ -8,7 +8,7 @@ const CreatePlaylist = ({ editPlaylistData = null, onComplete }) => {
   const [playlistType, setPlaylistType] = useState('');
   const [playlistImage, setPlaylistImage] = useState(null); 
   const [selectedSongs, setSelectedSongs] = useState(new Map());
-  const { songs, setAlertData } = useContext(AuthContext);
+  const { songs, setAlertData, apiUrl } = useContext(AuthContext);
 
   // 🌟 Pre-fill values if editing
   useEffect(() => {
@@ -54,8 +54,8 @@ const CreatePlaylist = ({ editPlaylistData = null, onComplete }) => {
 
     try {
       const endpoint = editPlaylistData
-        ? `http://localhost:8080/updatePlaylist/${editPlaylistData.id}`
-        : 'http://localhost:8080/addToPlaylist';
+        ? `${apiUrl}/updatePlaylist/${editPlaylistData.id}`
+        : `${apiUrl}/addToPlaylist`;
 
       const response = await fetch(endpoint, {
         method: editPlaylistData ? 'PUT' : 'POST',

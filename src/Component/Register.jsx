@@ -3,7 +3,7 @@ import  AuthContext  from "../Context/AuthContext";
 
 
 const Register = () => {
-  const { setAlertData} = useContext(AuthContext);
+  const { setAlertData, apiUrl} = useContext(AuthContext);
   const [messageStatus,setMessageStatus] = useState(false);
   const [viewPassword, setViewPassword] = useState(false);
   const [passwordFeedback,setPasswordFeedback] = useState({
@@ -46,7 +46,7 @@ const Register = () => {
   const handleSubmit = async(e) => {
     e.preventDefault();
     try{
-      const response = await fetch('http://localhost:8080/register', {
+      const response = await fetch(`${apiUrl}/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

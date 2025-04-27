@@ -15,12 +15,12 @@ const AddMusic = ({ editingSong, setEditingSong, setPopUp }) => {
         genre: "",
       });
 
-    const { fetchSongs } = useContext(AuthContext);
+    const { fetchSongs, apiUrl } = useContext(AuthContext);
 
     useEffect(() => {
       const fetchArtists = async () => {
         try{
-          const res = await fetch("http://localhost:8080/artists");
+          const res = await fetch(`${apiUrl}/artists`);
           const data = await res.json();
           setArtists(data);
         } catch (err){
@@ -63,8 +63,8 @@ const AddMusic = ({ editingSong, setEditingSong, setPopUp }) => {
 
         try {
           const url = editingSong
-          ? `http://localhost:8080/songupdate/${editingSong.id}`
-          : 'http://localhost:8080/addSong';
+          ? `${apiUrl}/songupdate/${editingSong.id}`
+          : `${apiUrl}/addSong`;
           const method = editingSong ? 'PUT' : 'POST';
     
           const response = await fetch(url, {

@@ -4,7 +4,7 @@ import AuthContext from '../Context/AuthContext';
 import { set } from "@cloudinary/url-gen/actions/variable";
 
 const ProfileCard = ({ contextUser, refreshUser }) => {
-  const { openConfirmDialog, logout, setAlertData } = useContext(AuthContext);
+  const { openConfirmDialog, logout, setAlertData, apiUrl } = useContext(AuthContext);
   const fileInputRef = useRef();
 
   const handleLogOut = () => {
@@ -19,7 +19,7 @@ const ProfileCard = ({ contextUser, refreshUser }) => {
     formData.append("image", file);
 
     try {
-      const res = await fetch(`http://localhost:8080/user/${contextUser.id}/update-photo`, {
+      const res = await fetch(`${apiUrl}/user/${contextUser.id}/update-photo`, {
         method: "PUT",
         body: formData,
       });
@@ -38,7 +38,7 @@ const ProfileCard = ({ contextUser, refreshUser }) => {
   const handleRemoveImage = async () => {
     openConfirmDialog("Are you sure you want to remove the profile image?", async () => {
       try {
-        const res = await fetch(`http://localhost:8080/user/${contextUser.id}/remove-image`, {
+        const res = await fetch(`${apiUrl}/user/${contextUser.id}/remove-image`, {
           method: "DELETE",
         });
 

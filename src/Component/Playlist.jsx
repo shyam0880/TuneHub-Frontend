@@ -3,7 +3,7 @@ import AuthContext from '../Context/AuthContext';
 import { Outlet, useNavigate } from 'react-router-dom';
 
 const Playlist = ({ currSong, onSongSelect, checkPlay,setAlertData }) => {
-  const { contextUser, openConfirmDialog  } = useContext(AuthContext);
+  const { contextUser, openConfirmDialog, apiUrl } = useContext(AuthContext);
   const [playlist, setPlayList] = useState([]);
   const [currentPlaylist, setCurrentPlaylist] = useState(null);
   const [playlistSongs, setPlaylistSongs] = useState(); //used to store songs when extract by playlist id
@@ -12,7 +12,7 @@ const Playlist = ({ currSong, onSongSelect, checkPlay,setAlertData }) => {
   
   const fetchPlaylist =async()=>{
     try{
-      const response = await fetch("http://localhost:8080/viewPlaylist");
+      const response = await fetch(`${apiUrl}/viewPlaylist`);
 
       if(!response.ok){
         const errorMessage = await response.text();
@@ -38,7 +38,7 @@ const Playlist = ({ currSong, onSongSelect, checkPlay,setAlertData }) => {
 
   const fetchPlaylistById =async(id)=>{
     try{
-      const respnse  = await fetch(`http://localhost:8080/users/${id}`);
+      const respnse  = await fetch(`${apiUrl}/users/${id}`);
       if(respnse.ok){
         const data = await respnse.json();
         setPlaylistSongs(data);
@@ -65,7 +65,7 @@ const Playlist = ({ currSong, onSongSelect, checkPlay,setAlertData }) => {
    // ✅ NEW FUNCTION TO DELETE A PLAYLIST
    const handleDeletePlaylist = async (playlistId) => {
     try {
-      const response = await fetch(`http://localhost:8080/deletePlaylist/${playlistId}`, {
+      const response = await fetch(`${apiUrl}/deletePlaylist/${playlistId}`, {
         method: 'DELETE'
       });
       if (response.ok) {
@@ -83,7 +83,7 @@ const Playlist = ({ currSong, onSongSelect, checkPlay,setAlertData }) => {
    // ✅ NEW FUNCTION TO REMOVE SONG FROM A PLAYLIST
    const handleRemoveSong = async (playlistId, songId) => {
     try {
-      const response = await fetch(`http://localhost:8080/playlist/${playlistId}/songs/${songId}`, {
+      const response = await fetch(`${apiUrl}/playlist/${playlistId}/songs/${songId}`, {
         method: 'PUT'
       });
       if (response.ok) {

@@ -9,7 +9,7 @@ import ProfileCard from '../Component/ProfileCard';
 
 
 const Dashboard = () => {
-	const { songs, setSongs, contextUser, addToRecent, recentSong ,greeting, logout, setAlertData, openConfirmDialog  } = useContext(AuthContext);
+	const { songs, setSongs, contextUser, addToRecent, recentSong ,greeting, logout, setAlertData, openConfirmDialog, apiUrl  } = useContext(AuthContext);
 	const {
 		currentSong,
 		setCurrentSong,
@@ -83,7 +83,7 @@ const Dashboard = () => {
     }, []);
 
 	const fetchArtists = async () => {
-        const res = await fetch("http://localhost:8080/artists");
+        const res = await fetch(`${apiUrl}/artists`);
         const data = await res.json();
         setArtists(data);
     };
@@ -155,7 +155,7 @@ const Dashboard = () => {
 
 	const handleDelete = async(id)=>{
 		try{
-			const response= await fetch(`http://localhost:8080/deleteById/${id}`,{
+			const response= await fetch(`${apiUrl}/deleteById/${id}`,{
 			method:"DELETE",	
 			});
 			

@@ -4,6 +4,7 @@ import React, { createContext, useState, useEffect } from 'react';
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
+  const [apiUrl] = useState('https://tunehub-backend-mhb4.onrender.com');
   const [contextUser, setContextUser] = useState(undefined);
   const [recentSong,setRecentSong]=useState([])
   const [songs, setSongs] = useState([]);
@@ -88,7 +89,7 @@ const AuthProvider = ({ children }) => {
 
   const fetchSongs = async () => {
         try {
-            const response = await fetch("http://localhost:8080/displayAllSongs"); 
+            const response = await fetch(`${apiUrl}/displayAllSongs`); 
             if (!response.ok) {
                 throw new Error("Failed to fetch songs");
             }
@@ -117,6 +118,7 @@ const AuthProvider = ({ children }) => {
       confirmOpen,
       confirmMessage,
       onConfirmAction,
+      apiUrl,
       }}>
 
       {children}
