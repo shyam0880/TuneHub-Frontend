@@ -3,7 +3,7 @@ import '../CSS/Artist.css';
 import AuthContext from "../Context/AuthContext";
 
 const Artist = () => {
-    const { apiUrl } = useContext(AuthContext);
+    const { apiUrl, setAlertData } = useContext(AuthContext);
 
     const [artists, setArtists] = useState([]);
 
@@ -11,6 +11,7 @@ const Artist = () => {
     const [editingId, setEditingId] = useState(null);
     const [openMenu, setOpenMenu] = useState(null); 
     const [visible, setVisible] = useState(false); 
+    const [isLoading, setIsLoading] = useState(false); 
 
     useEffect(() => {
         fetchArtists();
@@ -32,6 +33,7 @@ const Artist = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
         const formDataToSend = new FormData();
         formDataToSend.append("name", formData.name);
         if (formData.image) {
@@ -40,12 +42,22 @@ const Artist = () => {
 
         const method = editingId ? "PUT" : "POST";
         const url = editingId ? `${apiUrl}/artists/${editingId}` : `${apiUrl}/artists`;
-
-        await fetch(url, { method, body: formDataToSend });
-
-        setFormData({ name: "", image: null });
-        setEditingId(null);
-        fetchArtists();
+        try {
+            const response = await fetch(url, { method, body: formDataToSend });
+    
+            if (!response.ok) {  
+                setAlertData({ show: true, status: false, message: response.statusText });
+            }
+            setFormData({ name: "", image: null });
+            setEditingId(null);
+            fetchArtists();
+            setAlertData({ show: true, status: true, message: editingId ? "Artist updated successfully" : "Artist added successfully" });
+            setVisible(false); 
+        } catch (error) {
+            setAlertData({ show: true, status: false, message: error.message });
+        } finally {
+            setIsLoading(false); 
+        }
     };
 
     const handleEdit = (artist) => {
@@ -87,7 +99,15 @@ const Artist = () => {
                     <h2>{editingId ? "Edit Artist" : "Add Artist"}</h2>
                     <input name="name" value={formData.name} onChange={handleChange} placeholder="Name" className="input-field" />
                     <input type="file" onChange={handleFileChange} className="input-field" />
-                    <button type="submit" className="submit-btn">{editingId ? "Update" : "Add"}</button>
+                    <button type="submit" className="submit-btn" disabled={isLoading}>
+                    {isLoading ? (
+                            <div className="loading-spinner"></div>
+                        ) : editingId ? (
+                            "Update"
+                        ) : (
+                            "Add"
+                        )}
+                    </button>
                     <button type="button" className="cancel-btn" onClick={() => { setVisible(false); setEditingId(null); }}>Cancel</button>
                 </form>
             </div>)}

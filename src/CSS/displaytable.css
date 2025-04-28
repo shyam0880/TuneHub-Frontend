@@ -638,15 +638,14 @@ header .song_side .content .contentImage{
 	position: absolute;
 	right: 0;
 	bottom: 0;
-	height: 15rem;
+	height: 100%;
 	width: 40%;
-	/* border:  2px solid white; */
+	z-index: -1;
 }
 
 header .song_side .content .contentImage img{
 	width: 120%;
 	height: 120%;
-	border-radius: 10px;
 }
 
 header .song_side .content .buttons{
@@ -1345,7 +1344,10 @@ header .song_side .popular_song .playbox form input[type="text"].input:focus {
 	outline: none;
   }
 
-header .song_side .popular_song .playbox form input[type="submit"]{
+header .song_side .popular_song .playbox form button[type="submit"]{
+	display: inline-flex;
+	align-items: center;
+  	justify-content: center;
 	color: white;
 	padding: 11px 10px;
 	font-size: 0.75rem;
@@ -1353,6 +1355,21 @@ header .song_side .popular_song .playbox form input[type="submit"]{
 	border-radius: 25px;
 	background: none;
 }
+
+header .song_side .popular_song .playbox form button .loading-spinner {
+	border: 3px solid #f3f3f3;
+	border-top: 3px solid #00c2cb;
+	border-radius: 50%;
+	width: 20px;
+	height: 20px;
+	animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+  }
+  
 
 
 /* recent playlist song ypdate */

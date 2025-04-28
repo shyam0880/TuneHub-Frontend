@@ -4,7 +4,7 @@ import AuthContext from '../Context/AuthContext';
 import { set } from "@cloudinary/url-gen/actions/variable";
 
 const ProfileCard = ({ contextUser, refreshUser }) => {
-  const { openConfirmDialog, logout, setAlertData, apiUrl } = useContext(AuthContext);
+  const { openConfirmDialog, logout, setAlertData, apiUrl, setContextUser } = useContext(AuthContext);
   const fileInputRef = useRef();
 
   const handleLogOut = () => {
@@ -26,7 +26,7 @@ const ProfileCard = ({ contextUser, refreshUser }) => {
 
       if (res.ok) {
         setAlertData({show: true, status: true, message:"Image uploaded successfully!"});
-        refreshUser(); // re-fetch the user to update the image
+        setContextUser((prev) => ({ ...prev, image: res.message}));
       } else {
         setAlertData({show: true, status: false, message:"Failed to upload image"});
       }

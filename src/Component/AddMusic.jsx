@@ -3,8 +3,6 @@ import '../CSS/addsong.css';
 import AuthContext from '../Context/AuthContext';
 
 const AddMusic = ({ editingSong, setEditingSong, setPopUp }) => {
-    const [errMessage,setErrMessage] = useState();
-    const [ messageStatus, setMessageStatus] = useState(false);
     const [musicFile, setMusicFile] = useState(null);
     const [imageFile, setImageFile] = useState(null);
     const [artists, setArtists] = useState([]);
@@ -15,7 +13,8 @@ const AddMusic = ({ editingSong, setEditingSong, setPopUp }) => {
         genre: "",
       });
 
-    const { fetchSongs, apiUrl } = useContext(AuthContext);
+    const { fetchSongs, apiUrl, setAlertData} = useContext(AuthContext);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
       const fetchArtists = async () => {
@@ -24,7 +23,7 @@ const AddMusic = ({ editingSong, setEditingSong, setPopUp }) => {
           const data = await res.json();
           setArtists(data);
         } catch (err){
-          console.error("Error fetching artists:", err);
+          setAlertData({show: true, status: false, message:"Error fetching artists"});
 
         }
       }
@@ -49,9 +48,10 @@ const AddMusic = ({ editingSong, setEditingSong, setPopUp }) => {
     
       const handleSubmit = async (e) => {
         e.preventDefault(); 
+        setIsLoading(true); 
         if (!musicFile || !imageFile) {
-          setMessageStatus(false);
-          setErrMessage("Please upload both song and image files.");
+          setAlertData({show: true, status: false, message:"Please upload both song and image files."});
+          setIsLoading(false);
           return;
         }
         const formData = new FormData();
@@ -75,8 +75,7 @@ const AddMusic = ({ editingSong, setEditingSong, setPopUp }) => {
           const result = await response.text(); 
     
           if (response.ok) {
-            setMessageStatus(true);
-            setErrMessage(result)
+            setAlertData({show: true, status: true, message:result});
             setSong({ name: "", genre: ""}); 
             setMusicFile(null);
             setImageFile(null);
@@ -85,23 +84,14 @@ const AddMusic = ({ editingSong, setEditingSong, setPopUp }) => {
             setPopUp(false);
             setEditingSong(null);
           } else {
-            setMessageStatus(false);
-            setErrMessage("Failed to add song: " + result);
+            setAlertData({show: true, status: false, message:"Failed to add song"});
           }
         } catch (error) {
-          setMessageStatus(false);
-          setErrMessage("Error: " + error.message);
+          setAlertData({show: true, status: false, message:"Error adding song"});
+        } finally{
+          setIsLoading(false);
         }
       };
-
-
-      useEffect(() => {
-        if (errMessage) {
-          const timer = setTimeout(() => setErrMessage(""), 3000);
-          return () => clearTimeout(timer);
-        }
-      }, [errMessage]);
-
     
   return (
     <form onSubmit={handleSubmit} className="song_form">
@@ -196,8 +186,16 @@ const AddMusic = ({ editingSong, setEditingSong, setPopUp }) => {
       <input type="file" id="imageID" accept="image/*" onChange={(e) => setImageFile(e.target.files[0])} required />
     </div>
 
-    <button type="submit" className="btn btn-primary">{editingSong ? 'Update Song' : 'Add Song'}</button>
-    {errMessage && <p style={{ color: messageStatus ? "green" : "red",fontSize: "20px" }}>{errMessage}</p>}
+    <button type="submit" className="btn btn-primary" disabled={isLoading}>
+    {isLoading ? (
+      <>
+        {editingSong ? 'Updating...' : 'Submitting...'}
+        <div className="loader" style={{ marginLeft: '8px' }}></div>
+      </>
+    ) : (
+      editingSong ? 'Update Song' : 'Add Song'
+    )}
+    </button>
   </form>
   )
 }

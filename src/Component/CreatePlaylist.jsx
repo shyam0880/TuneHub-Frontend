@@ -8,6 +8,7 @@ const CreatePlaylist = ({ editPlaylistData = null, onComplete }) => {
   const [playlistType, setPlaylistType] = useState('');
   const [playlistImage, setPlaylistImage] = useState(null); 
   const [selectedSongs, setSelectedSongs] = useState(new Map());
+  const [loading, setLoading] = useState(false); 
   const { songs, setAlertData, apiUrl } = useContext(AuthContext);
 
   // 🌟 Pre-fill values if editing
@@ -51,7 +52,7 @@ const CreatePlaylist = ({ editPlaylistData = null, onComplete }) => {
     if (playlistImage) {
       formData.append('image', playlistImage);
     }
-
+    setLoading(true);
     try {
       const endpoint = editPlaylistData
         ? `${apiUrl}/updatePlaylist/${editPlaylistData.id}`
@@ -76,6 +77,8 @@ const CreatePlaylist = ({ editPlaylistData = null, onComplete }) => {
     } catch (error) {
       console.error('Error submitting playlist:', error);
       setAlertData({show: true, status: false, message:'Something went wrong!'});
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -125,7 +128,16 @@ const CreatePlaylist = ({ editPlaylistData = null, onComplete }) => {
                 />
                 <br />
 
-                <input type="submit" value={editPlaylistData ? 'UPDATE PLAYLIST' : 'ADD PLAYLIST'} />
+                <button type="submit" disabled={loading}>
+                {loading ? (
+                    <>
+                      {editPlaylistData ? 'Updating...' : 'Submitting...'}
+                      <div className="loader" ></div>
+                    </>
+                  ) : (
+                    editPlaylistData ? 'Update Playlist' : 'Add Playlist'
+                  )}
+                </button>
                 <br />
               </div>
             </div>

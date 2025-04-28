@@ -39,7 +39,29 @@
     border-radius: 5px;
     background: #007bff;
     color: white;
-    transition: all 0.3s;
+    transition: background-color 0.3s ease;
+}
+.artist .form-container .submit-btn:disabled {
+    background-color: #999;
+    cursor: not-allowed;
+}
+
+.artist .form-container .loading-spinner {
+    border: 3px solid transparent;
+    border-top: 3px solid white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .artist .form-container .cancel-btn {
