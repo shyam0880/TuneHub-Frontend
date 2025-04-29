@@ -16,7 +16,10 @@ const Payment = () => {
             navigate("/");
         }
     }, [contextUser, navigate]);
-    
+
+    const refreshUser = () => {
+        window.location.reload();
+      };    
 
     // Fetch Razorpay Key from Backend
     useEffect(() => {
@@ -118,7 +121,8 @@ const Payment = () => {
     
             if (updateRes.ok) {
                 const updatedUser = await updateRes.json();
-                login(updatedUser);
+                // login(updatedUser);
+                refreshUser();
                 setAlertData({
 					show: true,
 					status: true,
