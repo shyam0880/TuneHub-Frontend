@@ -16,6 +16,7 @@ const CreatePlaylistWrapper = lazy(() => import('./Component/CreatePlaylistWrapp
 const ProtectedRoute = lazy(() => import('./Context/ProtectedRouter'));
 import AlertMessage from '../src/Component/AlertMessage';
 import ConfirmDialog from './Component/ConfirmDialog';
+import NotFoundPage from './Pages/NotFoundPage';
 
 
 
@@ -57,6 +58,10 @@ function App() {
 			},
 			
 		],
+	},
+	{
+		path: "*",
+		element: <NotFoundPage/> 
 	},
 	]);
 	
