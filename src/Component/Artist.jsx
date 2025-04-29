@@ -3,7 +3,7 @@ import '../CSS/Artist.css';
 import AuthContext from "../Context/AuthContext";
 
 const Artist = () => {
-    const { apiUrl, setAlertData } = useContext(AuthContext);
+    const { apiUrl, setAlertData, openConfirmDialog } = useContext(AuthContext);
 
     const [artists, setArtists] = useState([]);
 
@@ -76,10 +76,25 @@ const Artist = () => {
     };
 
     const handleDelete = async (id) => {
-        await fetch(`${apiUrl}/artists/${id}`, { method: "DELETE" });
-        fetchArtists();
-        setOpenMenu(null); 
+        try {
+            const response = await fetch(`${apiUrl}/artists/${id}`, {
+                method: "DELETE",
+            });
+    
+            if (response.ok) {
+                setAlertData({ show: true, status: true, message: "Artist deleted successfully" });
+                fetchArtists(); 
+            } else {
+                const errorData = await response.json();
+                setAlertData({ show: true, status: false, message: errorData.message || "Unknown error" });
+            }
+        } catch (error) {
+            setAlertData({ show: true, status: false, message: error.message });
+        }
+    
+        setOpenMenu(null);
     };
+    
 
     
     useEffect(() => {
@@ -91,6 +106,10 @@ const Artist = () => {
         document.addEventListener("click", handleClickOutside);
         return () => document.removeEventListener("click", handleClickOutside);
     }, []);
+
+    const handleDeleteArtist = (id) => {
+		openConfirmDialog("Are you sure you want to delete this artist?", () => handleDelete(id));
+	};
 
     return (
         <div className='artist'>
@@ -134,7 +153,7 @@ const Artist = () => {
                                     {openMenu === artist.id && (
                                         <div className="options-menu" onClick={(e) => e.stopPropagation()}>
                                             <button onClick={() => handleEdit(artist)}>Edit</button>
-                                            <button onClick={() => handleDelete(artist.id)}>Delete</button>
+                                            <button onClick={() => handleDeleteArtist(artist.id)}>Delete</button>
                                         </div>
                                     )}
                                 </div>
