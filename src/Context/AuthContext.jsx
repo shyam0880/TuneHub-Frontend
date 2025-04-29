@@ -17,18 +17,44 @@ const AuthProvider = ({ children }) => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [confirmMessage, setConfirmMessage] = useState('');
   const [onConfirmAction, setOnConfirmAction] = useState(() => () => {});
+  const [loading, setLoading] = useState(true);
+  const [attempts, setAttempts] = useState(0);
 
   useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem('userdata'));
-    if (userData) setContextUser(userData);
-    else setContextUser(null);
-
-    const song = JSON.parse(localStorage.getItem('song'));
-    if (song) setRecentSong(song);
-    setIsRecentAdded(true);
-    fetchSongs();
-
+    const fetchUserAndSongs = async () => {
+      const userData = JSON.parse(localStorage.getItem('userdata'));
+      let finalUser = null;
+      if (userData) {
+        try {
+          const response = await fetch(`${apiUrl}/user/${userData.id}`);
+          if (response.ok) {
+            const data = await response.json(); 
+            finalUser = data;
+          } else {
+            finalUser = userData;
+          }
+        } catch (error) {
+          console.error("Error fetching user:", error);
+          finalUser = userData;
+        }
+        setContextUser(finalUser);
+        if (finalUser?.premium || finalUser?.role === 'admin') {
+          fetchSongs();
+        }
+      } else {
+        setContextUser(null);
+      }
+      
+      const song = JSON.parse(localStorage.getItem('song'));
+      if (song) setRecentSong(song);
+  
+      setIsRecentAdded(true);
+     
+    };
+  
+    fetchUserAndSongs();
   }, []);
+
   
   const getGreeting = () => {
    const hour = new Date().getHours();
@@ -66,6 +92,15 @@ const AuthProvider = ({ children }) => {
       localStorage.setItem('song', JSON.stringify(recentSong));
   };
 
+  const removeFromRecent = (songId) => {
+    setRecentSong((prevRecentSongs) => {
+      const updatedRecentSongs = prevRecentSongs.filter(
+        (recent) => recent.id !== songId
+      );
+      return updatedRecentSongs;
+    });
+  }
+
   useEffect(() => {
     if(isRecentAdded) {
       localStorage.setItem('song', JSON.stringify(recentSong));
@@ -91,14 +126,33 @@ const AuthProvider = ({ children }) => {
         try {
             const response = await fetch(`${apiUrl}/displayAllSongs`); 
             if (!response.ok) {
-                throw new Error("Failed to fetch songs");
+                throw new Error('Network response was not ok');
             }
             const data = await response.json();
             setSongs(data);
+            setLoading(false);
+            setAttempts(0); 
         } catch (err) {
-            setAlertData({show: true, status: false, message:err.message});
+            setAttempts(prev => prev + 1);
         } 
     };
+
+    useEffect(() => {
+      if (loading) {
+        const interval = setInterval(() => {
+          fetchSongs();
+        }, 5000);  
+  
+        return () => clearInterval(interval); 
+      }
+    }, [loading]);
+  
+    useEffect(() => {
+      if (attempts >= 5) {  
+        setLoading(false);
+        setAlertData({show: true, status: false, message:'Error fetching songs. Please try again later.'});
+      }
+    }, [attempts]);
 
   return (
     <AuthContext.Provider value={{ 
@@ -119,6 +173,7 @@ const AuthProvider = ({ children }) => {
       confirmMessage,
       onConfirmAction,
       apiUrl,
+      removeFromRecent
       }}>
 
       {children}
