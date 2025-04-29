@@ -74,6 +74,14 @@ export const DataProvider = ({ children }) => {
         });
     }
 
+    const removeFromDownload = (songId) => {
+        setDownloadedSong((prevDownloadedSongs) => {
+            const updatedDownloadedSongs = prevDownloadedSongs.filter(
+                (downloaded) => downloaded.id !== songId
+            );
+            return updatedDownloadedSongs;
+        });
+    }
 
 
     useEffect(() => {
@@ -105,6 +113,7 @@ export const DataProvider = ({ children }) => {
         audio,
         togglePlay,
         handleDownload,
+        removeFromDownload
     }), [
         currentSong,
         downloadedSong,
