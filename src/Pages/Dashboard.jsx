@@ -9,7 +9,7 @@ import ProfileCard from '../Component/ProfileCard';
 
 
 const Dashboard = () => {
-	const { songs, setSongs, contextUser, addToRecent, recentSong ,greeting, logout, setAlertData, openConfirmDialog, apiUrl  } = useContext(AuthContext);
+	const { songs, setSongs, contextUser, addToRecent, recentSong ,greeting, logout, setAlertData, openConfirmDialog, apiUrl, removeFromRecent  } = useContext(AuthContext);
 	const {
 		currentSong,
 		setCurrentSong,
@@ -26,6 +26,7 @@ const Dashboard = () => {
 		addSong,
 		setDownloadedSong,
 		handleDownload,
+		removeFromDownload,
 	} = useContext(DataContext);
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -61,6 +62,7 @@ const Dashboard = () => {
     const audioRef = audio;
 	const [prevId,setPrevId] = useState(0);
 	const [showDelete,setShowDelete] = useState(false);
+	const [showRemove,setShowRemove] = useState(false);
 
 	const [playbackMode, setPlaybackMode] = useState("normal"); 
 	// Modes: "normal", "autoPlay", "repeat"
@@ -93,6 +95,7 @@ const Dashboard = () => {
 			if (!event.target.closest(".options-container")) {
 				setShowDelete(false);
 				setOpenMenu(null);
+				setShowRemove(false);
 			}
 		};
 		document.addEventListener("click", handleClickOutside);
@@ -160,9 +163,11 @@ const Dashboard = () => {
 			});
 			
 			if (!response.ok) {
-				setAlertData({ show: true, status: false, message:"Failed to fetch songs"});
+				setAlertData({ show: true, status: false, message:"Song not deleted" });
             }
 			setAlertData({show: true, status: true, message:await response.text()});
+			removeFromRecent(id);
+			removeFromDownload(id);
 
 			setSongs((prevSongs) => prevSongs.filter(song => song.id !== id));
             setShowDelete(null);
@@ -172,6 +177,26 @@ const Dashboard = () => {
 			setAlertData({ show: true, status: false, message:err});
 		}
 	}
+
+	const handleArtistDelete = async (id) => {
+        try {
+            const response = await fetch(`${apiUrl}/artists/${id}`, {
+                method: "DELETE",
+            });
+    
+            if (response.ok) {
+                setAlertData({ show: true, status: true, message: "Artist deleted successfully" });
+                fetchArtists(); 
+            } else {
+                const errorData = await response.json();
+                setAlertData({ show: true, status: false, message: errorData.message || "Unknown error" });
+            }
+        } catch (error) {
+            setAlertData({ show: true, status: false, message: error.message });
+        }
+    
+        setOpenMenu(null);
+    };
             
     const scroll = (ref, distance) => {
         if (ref.current) {
@@ -273,17 +298,13 @@ const Dashboard = () => {
 	};
 	  
 
-	const handleLogout = () => {
-		if (window.confirm("Are you sure you want to log out?")) logout();
-	};
-
 	// const likeSong = songs.filter((song) => song.likeSong === true);
 	const handleDeleteClick = (id) => {
 		openConfirmDialog("Are you sure you want to delete this song?", () => handleDelete(id));
 	};
 
 	const handleDeleteArtist = (id) => {
-		openConfirmDialog("Are you sure you want to delete this artist?", () => handleDelete(id));
+		openConfirmDialog("Are you sure you want to delete this artist?", () => handleArtistDelete(id));
 	};
 
   return (
@@ -416,6 +437,19 @@ const Dashboard = () => {
 										<div className="subtitle">{song.artist}</div>
 									</h5>
 									<div className="options">
+									<i 
+										className="bi bi-three-dots-vertical" 
+										onClick={(e) =>{
+											e.stopPropagation(); 
+											setShowRemove(showDelete === song.id ? null : song.id);
+										}
+										}  
+									></i>
+										{showRemove === song.id && (
+										<div className="options-menu">
+											<button className="testButton" onClick={() => removeFromRecent(song.id)}>Remove</button>
+									  	</div>
+									)}
 										<i className={((currentSong.id===song.id)&& isPlaying)?("bi bi-pause-circle-fill"):("bi bi-play-circle-fill")} onClick={() =>handlePlaylistSong(recentSong,index)}></i>
 									</div>
 									</li>
@@ -450,25 +484,30 @@ const Dashboard = () => {
 										{song.name} <br />
 										<div className="subtitle">{song.artist}</div>
 									</h5>
-									{contextUser.role==="admin"&&(<div className="options">
-									<i 
-										className="bi bi-three-dots-vertical" 
-										onClick={(e) =>{
-											e.stopPropagation(); 
-											setShowDelete(showDelete === song.id ? null : song.id);
-										}
-										}  
-									></i>
+										<div className="options">
+										<i 
+											className="bi bi-three-dots-vertical" 
+											onClick={(e) =>{
+												e.stopPropagation(); 
+												setShowDelete(showDelete === song.id ? null : song.id);
+											}
+											}  
+										></i>
 										{showDelete === song.id && (
 										<div className="options-menu">
-											<button className="testButton" onClick={() => handleDeleteClick(song.id)}>Delete</button>
-											<button className="testButton" onClick={() => handleEdit(song)}>Edit</button>
+											{contextUser.role==="admin"&&(
+												<>
+												<button className="testButton" onClick={() => handleDeleteClick(song.id)}>Delete</button>
+												<button className="testButton" onClick={() => handleEdit(song)}>Edit</button>
+												</>
+											)}
+											<button className="testButton" onClick={() => handleDownload(song)}>Download</button>
 									  	</div>
 									)}
 										<i className={`bi ${currentSong.id === song.id && isPlaying ? "bi-pause-circle-fill" : "bi-play-circle-fill"}`} 
 											onClick={() => handlePlaylistSong(songs, index)}
 										></i>
-									</div>)}
+									</div>
 									</li>
 							)
 								)):(

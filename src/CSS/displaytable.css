@@ -595,7 +595,6 @@ header .song_side nav .user{
 	width: 40px;
 	height: 40px;
 	border-radius: 50%;
-
 }
 header .song_side nav .user img{
 	width: 100%;
@@ -771,7 +770,7 @@ header .song_side .popular_song .pop_song .options .options-menu{
 }
 
 header .song_side .popular_song .pop_song .options .options-menu button{
-	width: 60px;
+	width: 80px;
 	height: 20px;
 	border: none;
 	outline: none;
