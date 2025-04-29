@@ -3,9 +3,13 @@ import "../CSS/ProfileCard.css";
 import AuthContext from '../Context/AuthContext';
 import { set } from "@cloudinary/url-gen/actions/variable";
 
-const ProfileCard = ({ contextUser, refreshUser }) => {
+const ProfileCard = ({ contextUser}) => {
   const { openConfirmDialog, logout, setAlertData, apiUrl, setContextUser } = useContext(AuthContext);
   const fileInputRef = useRef();
+
+  const refreshUser = () => {
+    window.location.reload();
+  };
 
   const handleLogOut = () => {
     openConfirmDialog("Are you sure want to Logout", () => logout());
@@ -25,8 +29,8 @@ const ProfileCard = ({ contextUser, refreshUser }) => {
       });
 
       if (res.ok) {
-        setAlertData({show: true, status: true, message:"Image uploaded successfully!"});
-        setContextUser((prev) => ({ ...prev, image: res.message}));
+        setAlertData({show: true, status: true, message:res.message});
+        refreshUser();
       } else {
         setAlertData({show: true, status: false, message:"Failed to upload image"});
       }
