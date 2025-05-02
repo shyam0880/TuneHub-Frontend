@@ -1,4 +1,3 @@
-import { set } from '@cloudinary/url-gen/actions/variable';
 import React, { createContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext();
@@ -6,14 +5,21 @@ const AuthContext = createContext();
 const AuthProvider = ({ children }) => {
   const [apiUrl] = useState('https://tunehub-backend-mhb4.onrender.com');
   const [contextUser, setContextUser] = useState(undefined);
-  const [recentSong,setRecentSong]=useState([])
+  const [recentSong, setRecentSong] = useState(() => {
+    try {
+      const stored = localStorage.getItem('song');
+      return stored ? JSON.parse(stored) : [];
+    } catch (e) {
+      console.error("Failed to parse recent songs from localStorage", e);
+      return [];
+    }
+  });
   const [songs, setSongs] = useState([]);
   const [alertData, setAlertData] = useState({
     show: false,
     status: true,
     message: "",
   });
-  const [isRecentAdded, setIsRecentAdded] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [confirmMessage, setConfirmMessage] = useState('');
   const [onConfirmAction, setOnConfirmAction] = useState(() => () => {});
@@ -23,33 +29,33 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const fetchUserAndSongs = async () => {
       const userData = JSON.parse(localStorage.getItem('userdata'));
-      let finalUser = null;
       if (userData) {
+        setContextUser(userData);
+
         try {
           const response = await fetch(`${apiUrl}/user/${userData.id}`);
           if (response.ok) {
-            const data = await response.json(); 
-            finalUser = data;
+            const updatedUser = await response.json();
+            setContextUser(updatedUser);
+
+            if (updatedUser?.premium || updatedUser?.role === 'admin') {
+              fetchSongs();
+            }
+
           } else {
-            finalUser = userData;
+             if (userData?.premium || userData?.role === 'admin') {
+                fetchSongs();
+              }
           }
         } catch (error) {
           console.error("Error fetching user:", error);
-          finalUser = userData;
-        }
-        setContextUser(finalUser);
-        if (finalUser?.premium || finalUser?.role === 'admin') {
-          fetchSongs();
+          if (userData?.premium || userData?.role === 'admin') {
+            fetchSongs();
+          }
         }
       } else {
         setContextUser(null);
-      }
-      
-      const song = JSON.parse(localStorage.getItem('song'));
-      if (song) setRecentSong(song);
-  
-      setIsRecentAdded(true);
-     
+      }     
     };
   
     fetchUserAndSongs();
@@ -89,7 +95,6 @@ const AuthProvider = ({ children }) => {
         return [song, ...prevRecentSongs].slice(0, 10);
       }
       });
-      localStorage.setItem('song', JSON.stringify(recentSong));
   };
 
   const removeFromRecent = (songId) => {
@@ -102,10 +107,8 @@ const AuthProvider = ({ children }) => {
   }
 
   useEffect(() => {
-    if(isRecentAdded) {
-      localStorage.setItem('song', JSON.stringify(recentSong));
-    }
-  }, [recentSong, isRecentAdded]);
+    localStorage.setItem('song', JSON.stringify(recentSong));
+  }, [recentSong]);
 
 
   const openConfirmDialog = (message, onConfirm) => {
@@ -133,6 +136,7 @@ const AuthProvider = ({ children }) => {
             setLoading(false);
             setAttempts(0); 
         } catch (err) {
+            console.error('Error fetching songs:', err);
             setAttempts(prev => prev + 1);
         } 
     };
