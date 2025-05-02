@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import AuthContext from '../Context/AuthContext';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
+import Loading from '../Component/Loading';
 
 import '../CSS/Payment.css';
 
@@ -11,11 +12,15 @@ const Payment = () => {
     const { contextUser, login, setAlertData, apiUrl } = useContext(AuthContext);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        if (contextUser.premium || contextUser.role === "admin") {
-            navigate("/");
-        }
-    }, [contextUser, navigate]);
+    if (contextUser && (contextUser.premium || contextUser.role === "admin")) {
+        return <Navigate to="/dashboard" replace />;
+      }
+      
+    if (contextUser === undefined) {
+        return <Loading />;
+    }
+      
+    
 
     const refreshUser = () => {
         window.location.reload();
