@@ -132,11 +132,11 @@ const Register = () => {
 
           <div className="radio">
             <label for="role">Role : </label>
-            <input type="radio" name="role" value="admin" id="admin" 
+            {/* <input type="radio" name="role" value="admin" id="admin" 
             checked={user.role === "admin"}
             onChange={handleChange}
             />
-            <label for="admin">Admin</label>
+            <label for="admin">Admin</label> */}
             <input type="radio" name="role" value="customer" id="customer"
             checked={user.role === "customer"}
             onChange={handleChange}

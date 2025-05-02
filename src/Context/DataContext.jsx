@@ -9,11 +9,11 @@ export const DataProvider = ({ children }) => {
     
     const [currentSong, setCurrentSong] = useState({
         id: 0,
-        artist: "Kafle",
-        genre: "Hip-Hop",
-        link: "https://github.com/shyam0880/Tunehub/raw/main/Songs%20File/Habibi.mp3",
-        name: "Habibi",
-        imgLink: "https://shorturl.at/7YPQR",
+        artist: "Tunehub",
+        genre: "Melody",
+        link: "https://res.cloudinary.com/dvwcy1jab/video/upload/v1746026721/Welcome_to_TuneHub_your_ultimate_desti_wwfe5o.mp3",
+        name: "Welcome to Tunehub",
+        imgLink: "https://res.cloudinary.com/dvwcy1jab/image/upload/v1739204753/4f2eca63-aac2-46ed-919e-8179747f236a_tlrjd6.jpg",
         likeSong: false,
     });
 
