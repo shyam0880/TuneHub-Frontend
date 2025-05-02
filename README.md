@@ -6,7 +6,8 @@
 A modern, responsive frontend application for a music streaming platform, built with **React**. It offers users a seamless music listening experience with playlist management, song downloads, artist browsing, and a centralised music player — all through an intuitive interface.
 
 👉 Check out the [TuneHub Backend](https://github.com/shyam0880/Tunehub) for the REST API and business logic.<br>
-🌐 Live Site: [https://hummingbeat.netlify.app/](https://hummingbeat.netlify.app/)  (hosted on Netlify – may take a few seconds to load initially)
+🌐 Live Site: [https://hummingbeat.netlify.app/](https://hummingbeat.netlify.app/)  (hosted on Netlify – may take a few seconds to load initially)<br>
+⚠️ Note: Since the name "TuneHub" is commonly used, the website is named HummingBeat instead.
 
 
 
