@@ -27,7 +27,8 @@ const Home = () => {
 	return (
 	  <div className="home">
 		<div className="home1">
-		  <h1 onClick={() => setState(0)}>TUNE<span>HUB</span></h1><br />
+		  {/* <h1 onClick={() => setState(0)}>TUNE<span>HUB</span></h1><br /> */}
+		  	<img src="https://res.cloudinary.com/dvwcy1jab/image/upload/v1746169589/HummingBeatLogo_ebuiar.png" alt="" onClick={() => setState(0)}/>	
 		  <p>
 			Your ultimate destination for streaming, discovering, and sharing music. <br />
 			Explore new artists, create playlists, and enjoy nonstop music anytime, <br />
@@ -42,7 +43,7 @@ const Home = () => {
 		</div>
   
 		<div className="home2">
-			{state === 0 && <img src="https://shorturl.at/xVVGZ" alt="logo" />}
+			{state === 0 && <img src="https://res.cloudinary.com/dvwcy1jab/image/upload/v1740661126/musicband_vcf1bw.png" alt="logo" />}
 			{state === 1 && <Login />}
 			{state === 2 && <Register />}
 		</div>
