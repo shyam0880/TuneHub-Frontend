@@ -310,7 +310,7 @@ const Dashboard = () => {
   return (
     <header>
 	<div class="menu_side">
-		<h1>Tune<span>Hub</span></h1>
+		<h1>Humming<span>Beat</span></h1>
 		<div class="playlist">
 			<h4 className={(home===0 && !isChildRouteActive)?"active":""} onClick={()=>{handleHome(0)}}> Home</h4>
 			<h4 className={(home===1 && !isChildRouteActive)?"active":""} onClick={()=>{handleHome(1)}}> My Liberary</h4>
@@ -430,7 +430,7 @@ const Dashboard = () => {
 							recentSong.map((song,index) => (
 									<li key={song.id} className="songItem">
 									<div className="img_play">
-										<img src={song.imgLink} alt={song.name} />
+										<img src={song.imgLink} alt={song.name} loading="lazy"/>
 									</div>
 									<h5>
 										{song.name} <br />
@@ -478,7 +478,7 @@ const Dashboard = () => {
 							songs.map((song,index) => (
 									<li key={song.id} className="songItem">
 									<div className="img_play">
-										<img src={song.imgLink} alt={song.name} />
+										<img src={song.imgLink} alt={song.name} loading="lazy"/>
 									</div>
 									<h5>
 										{song.name} <br />
@@ -530,7 +530,7 @@ const Dashboard = () => {
 								artists.map((artist) => (
 									<li key={artist.id} className="artist-item">
 										<div className="artist-image">
-											<img src={artist.image} alt={artist.name} />
+											<img src={artist.image} alt={artist.name} loading="lazy" />
 											<button className="play-btn"><i class="bi bi-play-fill"></i></button>
 											{contextUser?.role == "admin"&&(<div className="options-container">
 												<button className="options-btn" 

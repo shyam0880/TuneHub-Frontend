@@ -1,23 +1,25 @@
-
-import './App.css';
 import React, { lazy, Suspense } from 'react';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
+import 'bootstrap-icons/font/bootstrap-icons.css';
+import './App.css';
+
 import { AuthProvider } from "./Context/AuthContext"
 import { DataProvider } from './Context/DataContext';
+
 const Home = lazy(() => import('./Pages/Home'));
 const Dashboard = lazy(() => import('./Pages/Dashboard'));
 const Payment = lazy(()=>import('./Payment/Payment'))
-import 'bootstrap-icons/font/bootstrap-icons.css';
-import Artist from './Component/Artist';
-import Loading from './Component/Loading';
-import DownloadSong from './Component/DownloadSong';
 const Playlist = lazy(() => import('./Component/Playlist'));
 const CreatePlaylistWrapper = lazy(() => import('./Component/CreatePlaylistWrapper'));
 const ProtectedRoute = lazy(() => import('./Context/ProtectedRouter'));
+const Artist = lazy(() => import('./Component/Artist'));
+const DownloadSong = lazy(() => import('./Component/DownloadSong'));
+const NotFoundPage = lazy(() => import('./Pages/NotFoundPage'));
+
+import Loading from './Component/Loading';
 import AlertMessage from '../src/Component/AlertMessage';
 import ConfirmDialog from './Component/ConfirmDialog';
-import NotFoundPage from './Pages/NotFoundPage';
-
 
 
 function App() {

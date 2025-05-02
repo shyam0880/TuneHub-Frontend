@@ -18,6 +18,10 @@ header .menu_side {
 	flex-direction: column;
 }
 
+header .menu_side img{
+	width: 60%;
+}
+
 header .song_side {
 	width: 80%;
 	height: 100%;

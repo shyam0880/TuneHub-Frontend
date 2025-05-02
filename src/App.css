@@ -46,16 +46,27 @@ body {
 .home{
 	height: 100vh;
 	width: 100%;
+	padding: 0 90px;
 	color: white;
 	display: flex;
 	flex-direction: row;
 	align-items: center;
 	justify-content: space-around;
 }
+.home1{
+	width: 60%;
+}
 
 .home1 h1{
 	font-size: 60px;
 	padding: 10px;
+}
+
+
+.home1 img{
+	/* margin: 30px; */
+	width: 70%;
+	height: 50%;
 }
 
 .home1 p{
