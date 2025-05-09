@@ -128,11 +128,8 @@ const Payment = () => {
                 const updatedUser = await updateRes.json();
                 // login(updatedUser);
                 refreshUser();
-                setAlertData({
-					show: true,
-					status: true,
-					message:"Payment successful! You are now a premium user."});
-                navigate("/");
+                setAlertData({show: true,status: true,message:"Payment successful! You are now a premium user."});
+
             } else {
                 setAlertData({
 					show: true,

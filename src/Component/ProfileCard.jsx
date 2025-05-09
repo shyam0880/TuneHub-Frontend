@@ -29,7 +29,7 @@ const ProfileCard = ({ contextUser}) => {
       });
 
       if (res.ok) {
-        setAlertData({show: true, status: true, message:res.message});
+        setAlertData({show: true, status: true, message:"Profile image updated successfully!"});
         refreshUser();
       } else {
         setAlertData({show: true, status: false, message:"Failed to upload image"});
