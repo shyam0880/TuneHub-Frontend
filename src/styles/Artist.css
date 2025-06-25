@@ -1,7 +1,6 @@
 .artist {
     max-width: 100%;
     margin: auto;
-    padding: 20px;
     font-family: Arial, sans-serif;
 }
 
@@ -84,16 +83,19 @@
 .artist .artist-list {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
     list-style: none;
     padding: 0;
     margin-top: 20px;
+    
 }
 
-/* .artist-item {
-    background: white;
+.artist-item {
+    /* background: white; */
     border-radius: 10px;
     margin: 10px;
-    padding: 15px;
+    padding: 10px;
     text-align: center;
     position: relative;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
@@ -102,10 +104,11 @@
 
 .artist-item:hover {
     transform: scale(1.05);
-} */
+}
 .artist .artist-list .add-item{
     width: 150px;
     height: 150px;
+    margin: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -114,14 +117,26 @@
     border-radius: 50%;
 }
 
-.artist .artist-list li{
-    margin: 15px;
-}
+/* .artist .artist-list li{
+    list-style-type: none;
+	position: relative;
+	width: 150px;
+	height: 150px;
+	border-radius: 50%;
+	margin: 20px;
+	cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+	flex-shrink: 0;
+} */
+
 .artist .artist-list li .artist-image{
     position: relative;
     width: 150px;
     height: 150px;
-    margin-bottom: 5px;
+    /* margin-bottom: 5px; */
     transition: transform 0.3s;
 }
 
@@ -130,6 +145,7 @@
     height: 100%;
     border-radius: 50%;
     object-fit: cover;
+    object-position: top center;
 }
 
 .artist .artist-list li .artist-image:hover {
@@ -218,7 +234,7 @@
     background: #f5f5f5;
 }
 
-.artist .artist-list li .noArtist {
+.artist .artist-list .noArtist {
     text-align: center;
     font-weight: bold;
     color: gray;
@@ -227,4 +243,41 @@
 .artist .artist-list li .bi{
     font-size: 20px;
 
+}
+
+@media (max-width: 575px) {
+    .artist .artist-list .add-item{
+        width: 130px;
+        height: 130px;
+    }
+    .artist .artist-list {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+    .artist .artist-list li{
+        margin: 10px;
+    }
+    .artist .artist-list li .artist-image{
+        width: 120px;
+        height: 120px;
+    }
+
+
+}
+
+@media (min-width: 576px) and (max-width:980px){
+    .artist .artist-list .add-item{
+        width: 130px;
+        height: 130px;
+    }
+     .artist .artist-list li{
+        margin: 10px;
+    }
+    .artist .artist-list li .artist-image{
+        width: 120px;
+        height: 120px;
+    }
 }
