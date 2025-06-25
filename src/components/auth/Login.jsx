@@ -1,16 +1,16 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import  AuthContext  from "../Context/AuthContext";
-
+import  AuthContext  from "../../context/AuthContext";
 
 const Login = () => {
 	const { login , setAlertData, apiUrl} = useContext(AuthContext);
 	const navigate = useNavigate();
 	const [viewPassword, setViewPassword] = useState(false);
 	const [user,setUser] = useState({
-		email:"",
+		username:"",
 		password:""
 	});
+	const [isLoading, setIsLoading] = useState(false);
  
 	const handleData=(e)=>{
 		const{ name, value} = e.target;
@@ -20,34 +20,44 @@ const Login = () => {
 		})
 	}
 
-	const handleLogin=async(e)=>{
+	const handleLogin = async (e) => {
 		e.preventDefault();
-		try{
-			const response = await fetch(`${apiUrl}/signin`, {
+		setIsLoading(true);
+		try {
+			const params = new URLSearchParams();
+			params.append("email", user.email);
+			params.append("password", user.password);
+
+			const response = await fetch(`${apiUrl}/api/auth/login`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify(user),
-				});
+				credentials: 'include'
+			}
+			);
 
-				if (!response.ok) {
-					const errorMessage = await response.text();
-					setAlertData({ show: true, status: false, message: errorMessage || "Login failed"});
-					console.log(errorMessage);
-					return;
-				}
+			if (!response.ok) {
+				const errorMessage = await response.text();
+				setAlertData({ show: true, status: false, message: errorMessage || "Login failed"});
+				console.log(errorMessage);
+				setIsLoading(false);
+				return;
+			}
 
-				const data = await response.json(); 
-				login(data);
-				setAlertData({ show: true, status: true, message: "Login Successful"});
-				navigate("/dashboard");
-
+			const data = await response.json();
+			login(data);
+			setAlertData({ show: true, status: true, message: "Login Successful"});
+			navigate("/dashboard");
 		} catch (err) {
-			setAlertData({ show: true, status: false, message:err.message });
+			setAlertData({ show: true, status: false, message: err.message });
 		}
-
+		finally{
+			setIsLoading(false);
+		}
 	}
+
 
   return (
     <div className="container" >
@@ -56,11 +66,11 @@ const Login = () => {
 					<h1 className="form__title">Login</h1>
 					<div className="form__input-group">
 						<input 
-						type="text"	name="email" 
+						type="text"	name="username" 
 						onChange={handleData}
-						value={user.email}
+						value={user.username}
 						id="username"  
-						placeholder="Enter your Email" 
+						placeholder="Enter your Username" 
 						required/>
 					</div>
 					<div className="form__input-group">
@@ -71,13 +81,13 @@ const Login = () => {
 						id="pass" 
 						placeholder="Enter your Password" 
 						required/>
-						<i class={viewPassword?"bi bi-eye-slash":"bi bi-eye"} onClick={()=>setViewPassword(!viewPassword)}></i>
+						<i className={viewPassword?"bi bi-eye-slash":"bi bi-eye"} onClick={()=>setViewPassword(!viewPassword)}></i>
 					</div>
 					<div className="submit_btn">
-						<button type="submit" >Sign In</button>
+						<button type="submit" disabled={isLoading}>{isLoading? <div className="loader" style={{ marginLeft: '8px' }}></div> : "Sign In"}</button>
 					</div>
 				</form>
-				<p class="p line">Or With</p>
+				<p className="p line">Or With</p>
 				<div className="flex-row">
 					<button className="btn google">
 						<svg version="1.1" width="20" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512">

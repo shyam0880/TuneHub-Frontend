@@ -1,9 +1,9 @@
 import { useEffect, useState, useContext } from "react";
-import AuthContext from '../Context/AuthContext';
+import AuthContext from '../../context/AuthContext';
 import { useNavigate, Navigate } from "react-router-dom";
-import Loading from '../Component/Loading';
+import Loading from '../ui/Loading';
 
-import '../CSS/Payment.css';
+import '../../styles/Payment.css';
 
 const Payment = () => {
 
@@ -11,26 +11,13 @@ const Payment = () => {
     const [razorpayKey, setRazorpayKey] = useState("");
     const { contextUser, login, setAlertData, apiUrl } = useContext(AuthContext);
     const navigate = useNavigate();
-
-    if (contextUser && (contextUser.premium || contextUser.role === "admin")) {
-        return <Navigate to="/dashboard" replace />;
-      }
-      
-    if (contextUser === undefined) {
-        return <Loading />;
-    }
-      
     
-
-    const refreshUser = () => {
-        window.location.reload();
-      };    
-
-    // Fetch Razorpay Key from Backend
     useEffect(() => {
         const fetchRazorpayKey = async () => {
             try {
-                const response = await fetch(`${apiUrl}/api/payment/razorpay-key`); // API call to backend
+                const response = await fetch(`${apiUrl}/api/payment/razorpay-key`,{
+                    credentials: "include",
+                }); // API call to backend
                 const data = await response.json();
                 setRazorpayKey(data.razorpayKey); // Save key
             } catch (error) {
@@ -40,6 +27,12 @@ const Payment = () => {
     
         fetchRazorpayKey();
     }, []);
+
+    const refreshUser = () => {
+        window.location.reload();
+      };    
+
+    // Fetch Razorpay Key from Backend
     
    // Create Order on Backend
    const createOrder = async (amount) => {
@@ -53,6 +46,7 @@ const Payment = () => {
                     amount:amount, 
                     email:contextUser.email
                 }), 
+                credentials: "include",
             });
             if (!response.ok) {
                 setAlertData({
@@ -122,14 +116,13 @@ const Payment = () => {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({ email: contextUser.email }),
+                credentials: "include",
             });
     
             if (updateRes.ok) {
-                const updatedUser = await updateRes.json();
-                // login(updatedUser);
+                const message = await updateRes.text();
+                setAlertData({show: true, status: true, message: message});
                 refreshUser();
-                setAlertData({show: true,status: true,message:"Payment successful! You are now a premium user."});
-
             } else {
                 setAlertData({
 					show: true,
@@ -143,12 +136,20 @@ const Payment = () => {
                 message:"An error occurred."});
         }
     };
+        
+    if (contextUser && (contextUser.premium || contextUser.role === "ADMIN")) {
+        return <Navigate to="/dashboard" replace />;
+      }
+      
+    if (contextUser === undefined) {
+        return <Loading />;
+    }
  
     return (
         <div className="payment">            
                 <h1>Listen without limits. Try 1 month of Premium Individual for free.</h1>
                 <p>Only Rs 5000/month after. Cancel anytime. </p>
-                <p className="warning">********** USE UPI FOR PAYMENT (USE success@razorpay IN UPI) *********</p>
+                <p className="warning"> USE UPI FOR PAYMENT (USE success@razorpay IN UPI) </p>
                 <section className="layout">
                     <div className="grow">
                         <div className="info">

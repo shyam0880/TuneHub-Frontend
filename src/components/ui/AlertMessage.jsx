@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
-import "../CSS/AlertMessage.css";
-import AuthContext from "../Context/AuthContext";
+import "../../styles/AlertMessage.css";
+import AuthContext from "../../context/AuthContext";
 
 const AlertMessage = () => {
   const { alertData, setAlertData } = useContext(AuthContext);

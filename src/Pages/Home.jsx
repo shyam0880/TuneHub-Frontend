@@ -1,9 +1,9 @@
 import React, {useState,useContext, useEffect} from 'react';
-import Login from '../Component/Login';
-import Register from '../Component/Register';
-import  AuthContext  from "../Context/AuthContext";
+import Login from '../components/auth/Login';
+import Register from '../components/auth/Register';
+import  AuthContext  from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import Loading from '../Component/Loading';
+import Loading from '../components/ui/Loading';
 
 const Home = () => {
 	const { contextUser } = useContext(AuthContext);
@@ -25,13 +25,13 @@ const Home = () => {
 	}
 
 	return (
-	  <div className="home">
-		<div className="home1">
+	  <div className="home-page">
+		<div className="home-intro">
 		  {/* <h1 onClick={() => setState(0)}>TUNE<span>HUB</span></h1><br /> */}
 		  	<img src="https://res.cloudinary.com/dvwcy1jab/image/upload/v1746169589/HummingBeatLogo_ebuiar.png" alt="" onClick={() => setState(0)}/>	
-		  <p>
-			Your ultimate destination for streaming, discovering, and sharing music. <br />
-			Explore new artists, create playlists, and enjoy nonstop music anytime, <br />
+		  <p className='intro-text'>
+			Your ultimate destination for streaming, discovering, and sharing music.
+			Explore new artists, create playlists, and enjoy nonstop music anytime,
 			anywhere! 🎵🔥
 		  </p>
 		  <div className="overlay-container">
@@ -42,7 +42,7 @@ const Home = () => {
 		  </div>
 		</div>
   
-		<div className="home2">
+		<div className="home-content">
 			{state === 0 && <img src="https://res.cloudinary.com/dvwcy1jab/image/upload/v1740661126/musicband_vcf1bw.png" alt="logo" />}
 			{state === 1 && <Login />}
 			{state === 2 && <Register />}

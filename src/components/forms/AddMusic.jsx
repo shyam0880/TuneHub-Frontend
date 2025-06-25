@@ -1,11 +1,10 @@
 import React,{useEffect, useState, useContext} from 'react';
-import '../CSS/addsong.css';
-import AuthContext from '../Context/AuthContext';
+import '../../styles/addsong.css';
+import AuthContext from '../../context/AuthContext';
 
 const AddMusic = ({ editingSong, setEditingSong, setPopUp }) => {
     const [musicFile, setMusicFile] = useState(null);
     const [imageFile, setImageFile] = useState(null);
-    const [artists, setArtists] = useState([]);
     const [selectedArtist, setSelectedArtist] = useState("");
 
     const [song, setSong] = useState({
@@ -13,22 +12,8 @@ const AddMusic = ({ editingSong, setEditingSong, setPopUp }) => {
         genre: "",
       });
 
-    const { fetchSongs, apiUrl, setAlertData} = useContext(AuthContext);
+    const { fetchSongs, apiUrl, setAlertData, artists} = useContext(AuthContext);
     const [isLoading, setIsLoading] = useState(false);
-
-    useEffect(() => {
-      const fetchArtists = async () => {
-        try{
-          const res = await fetch(`${apiUrl}/artists`);
-          const data = await res.json();
-          setArtists(data);
-        } catch (err){
-          setAlertData({show: true, status: false, message:"Error fetching artists"});
-
-        }
-      }
-      fetchArtists();
-    }, []);
 
     useEffect(() => {
       if (editingSong) {
@@ -49,7 +34,7 @@ const AddMusic = ({ editingSong, setEditingSong, setPopUp }) => {
       const handleSubmit = async (e) => {
         e.preventDefault(); 
         setIsLoading(true); 
-        if (!musicFile || !imageFile) {
+        if (!editingSong && (!musicFile || !imageFile)) {
           setAlertData({show: true, status: false, message:"Please upload both song and image files."});
           setIsLoading(false);
           return;
@@ -63,13 +48,14 @@ const AddMusic = ({ editingSong, setEditingSong, setPopUp }) => {
 
         try {
           const url = editingSong
-          ? `${apiUrl}/songupdate/${editingSong.id}`
-          : `${apiUrl}/addSong`;
+          ? `${apiUrl}/api/songs/${editingSong.id}`
+          : `${apiUrl}/api/songs`;
           const method = editingSong ? 'PUT' : 'POST';
     
           const response = await fetch(url, {
             method,
             body: formData,
+            credentials: "include",
           });
     
           const result = await response.text(); 
@@ -158,7 +144,7 @@ const AddMusic = ({ editingSong, setEditingSong, setPopUp }) => {
 
     <div className="form-group">
         <label>Select Artist:</label>
-        <select value={selectedArtist} onChange={(e) => setSelectedArtist(e.target.value)} required>
+        <select value={selectedArtist} onChange={(e) => setSelectedArtist(e.target.value)} required={!editingSong}>
           <option value="">Select artist</option>
           {artists.map((artist) => (
             <option key={artist.id} value={artist.id}>
@@ -171,19 +157,19 @@ const AddMusic = ({ editingSong, setEditingSong, setPopUp }) => {
     <div className="form-group">
       <label>Upload Song:</label>
       <label className="imageClass" for="songID">
-        <i class="up bi-upload"></i>
+        <i className="up bi-upload"></i>
         {musicFile ? musicFile.name : "Upload Song"}
       </label>
-      <input type="file" id="songID" accept="audio/*" onChange={(e) => setMusicFile(e.target.files[0])} required />
+      <input type="file" id="songID" accept="audio/*" onChange={(e) => setMusicFile(e.target.files[0])} required={!editingSong} />
     </div>
 
     <div className="form-group">
       <label>Upload Image:</label>
       <label className="imageClass" for="imageID">
-        <i class="up bi-upload"></i>
+        <i className="up bi-upload"></i>
         {imageFile ? imageFile.name : "Upload Image"}
       </label>
-      <input type="file" id="imageID" accept="image/*" onChange={(e) => setImageFile(e.target.files[0])} required />
+      <input type="file" id="imageID" accept="image/*" onChange={(e) => setImageFile(e.target.files[0])} required={!editingSong} />
     </div>
 
     <button type="submit" className="btn btn-primary" disabled={isLoading}>

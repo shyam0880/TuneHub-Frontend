@@ -1,7 +1,6 @@
 import React, { useContext, useRef } from "react";
-import "../CSS/ProfileCard.css";
-import AuthContext from '../Context/AuthContext';
-import { set } from "@cloudinary/url-gen/actions/variable";
+import "../../styles/ProfileCard.css";
+import AuthContext from '../../context/AuthContext';
 
 const ProfileCard = ({ contextUser}) => {
   const { openConfirmDialog, logout, setAlertData, apiUrl, setContextUser } = useContext(AuthContext);
@@ -23,9 +22,10 @@ const ProfileCard = ({ contextUser}) => {
     formData.append("image", file);
 
     try {
-      const res = await fetch(`${apiUrl}/user/${contextUser.id}/update-photo`, {
+      const res = await fetch(`${apiUrl}/api/users/${contextUser.id}/update-photo`, {
         method: "PUT",
         body: formData,
+        credentials: "include",
       });
 
       if (res.ok) {
@@ -42,8 +42,9 @@ const ProfileCard = ({ contextUser}) => {
   const handleRemoveImage = async () => {
     openConfirmDialog("Are you sure you want to remove the profile image?", async () => {
       try {
-        const res = await fetch(`${apiUrl}/user/${contextUser.id}/remove-image`, {
+        const res = await fetch(`${apiUrl}/api/users/${contextUser.id}/remove-photo`, {
           method: "DELETE",
+          credentials: "include",
         });
 
         if (res.ok) {
@@ -54,6 +55,28 @@ const ProfileCard = ({ contextUser}) => {
         }
       } catch (error) {
         setAlertData({show: true, status: false, message:"Error removing image"});
+      }
+    });
+  };
+
+  const handleDeleteAccount = async () => {
+    openConfirmDialog("Are you sure you want to delete your account?", async () => {
+      try {
+        const res = await fetch(`${apiUrl}/api/users/${contextUser.id}`, {
+          method: "DELETE",
+          credentials: "include",
+        });
+
+        if (res.ok) {
+          setAlertData({show: true, status: true, message:"Account deleted successfully!"});
+          setContextUser(undefined);
+          logout();
+          refreshUser();
+        } else {
+          setAlertData({show: true, status: false, message:"Failed to delete account"});
+        }
+      } catch (error) {
+        setAlertData({show: true, status: false, message:"Error deleting account"});
       }
     });
   };
@@ -89,6 +112,10 @@ const ProfileCard = ({ contextUser}) => {
           )}
           <button className="btn-third" onClick={handleLogOut}>SignOut</button>
         </div>
+        <div className="Delete-Account" style={{ margin: "5px" , width: "100%" }}>
+          <button className="btn-third" style={{ width: "100%" } } onClick={() => handleDeleteAccount()}>Delete Account</button>
+        </div>
+            
       </div>
     </div>
   );

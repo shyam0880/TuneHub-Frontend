@@ -1,36 +1,33 @@
 import React, { useState, useEffect, useContext } from 'react';
-import AuthContext from '../Context/AuthContext';
-import '../CSS/displaytable.css';
+import AuthContext from '../../context/AuthContext';
 
-const CreatePlaylist = ({ editPlaylistData = null, onComplete }) => {
+const CreatePlaylist = ({editPlaylistData=null, onComplete }) => {
+  const { songs, setAlertData, apiUrl, contextUser } = useContext(AuthContext);
   const [popUp, setPopUp] = useState(false);
   const [playlistName, setPlaylistName] = useState('');
   const [playlistType, setPlaylistType] = useState('');
   const [playlistImage, setPlaylistImage] = useState(null); 
-  const [selectedSongs, setSelectedSongs] = useState(new Map());
+  const [selectedSongIds, setSelectedSongIds] = useState(new Set());
   const [loading, setLoading] = useState(false); 
-  const { songs, setAlertData, apiUrl } = useContext(AuthContext);
 
-  // 🌟 Pre-fill values if editing
   useEffect(() => {
     if (editPlaylistData) {
       setPlaylistName(editPlaylistData.name);
       setPlaylistType(editPlaylistData.type);
-      const initialSongs = new Map();
-      editPlaylistData.songs.forEach((song) => {
-        initialSongs.set(song.id, song);
-      });
-      setSelectedSongs(initialSongs);
+
+      if (Array.isArray(editPlaylistData.songIds)) {
+        setSelectedSongIds(new Set(editPlaylistData.songIds));
+      }
     }
   }, [editPlaylistData]);
 
-  const handleCheckboxChange = (song) => {
-    setSelectedSongs((prevSelected) => {
-      const newSelected = new Map(prevSelected);
-      if (newSelected.has(song.id)) {
-        newSelected.delete(song.id);
+  const handleCheckboxChange = (songId) => {
+    setSelectedSongIds((prevSelected) => {
+      const newSelected = new Set(prevSelected);
+      if (newSelected.has(songId)) {
+        newSelected.delete(songId);
       } else {
-        newSelected.set(song.id, song);
+        newSelected.add(songId);
       }
       return newSelected;
     });
@@ -38,29 +35,32 @@ const CreatePlaylist = ({ editPlaylistData = null, onComplete }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!playlistName.trim() || !playlistType.trim() || selectedSongs.size === 0) {
+    setLoading(true);
+    if (!playlistName.trim() || !playlistType.trim() || selectedSongIds.size === 0) {
       setAlertData({ show: true, status: false, message:'Please fill out all required fields.'});
+      setLoading(false);
       return;
     }
 
     const formData = new FormData();
+    formData.append('userId', contextUser.id); 
     formData.append('name', playlistName);
     formData.append('type', playlistType);
-    formData.append('songs', JSON.stringify(Array.from(selectedSongs.keys()))); // send only IDs
+    formData.append('songs', JSON.stringify(Array.from(selectedSongIds))); // send only IDs
 
     // Only append image if new file is selected (optional during update)
     if (playlistImage) {
       formData.append('image', playlistImage);
     }
-    setLoading(true);
     try {
       const endpoint = editPlaylistData
-        ? `${apiUrl}/updatePlaylist/${editPlaylistData.id}`
-        : `${apiUrl}/addToPlaylist`;
+        ? `${apiUrl}/api/playlists/updatePlaylist/${editPlaylistData.id}`
+        : `${apiUrl}/api/playlists`;
 
       const response = await fetch(endpoint, {
         method: editPlaylistData ? 'PUT' : 'POST',
         body: formData,
+        credentials: "include",
       });
 
       if (response.ok) {
@@ -68,11 +68,13 @@ const CreatePlaylist = ({ editPlaylistData = null, onComplete }) => {
         setPlaylistName('');
         setPlaylistType('');
         setPlaylistImage(null);
-        setSelectedSongs(new Map());
+        setSelectedSongIds(new Set());
+        setLoading(false);
         setAlertData({ show: true, status: true, message: editPlaylistData ? 'Playlist updated successfully' : 'Playlist added successfully'});
         if (onComplete) onComplete(); // callback if passed
       } else {
         setAlertData({ show: true, status: false, message: 'Failed to submit playlist.' });
+        setLoading(false);
       }
     } catch (error) {
       console.error('Error submitting playlist:', error);
@@ -87,7 +89,7 @@ const CreatePlaylist = ({ editPlaylistData = null, onComplete }) => {
   };
 
   return (
-    <div className="popular_song">
+    <div className="section-song">
       <div className="playbox">
         <form onSubmit={handleSubmit}>
           {popUp && (
@@ -101,6 +103,7 @@ const CreatePlaylist = ({ editPlaylistData = null, onComplete }) => {
                   placeholder="Enter Playlist Name"
                   value={playlistName}
                   onChange={(e) => setPlaylistName(e.target.value)}
+                  required
                 />
                 <br />
 
@@ -111,6 +114,7 @@ const CreatePlaylist = ({ editPlaylistData = null, onComplete }) => {
                   placeholder="Enter Playlist Type"
                   value={playlistType}
                   onChange={(e) => setPlaylistType(e.target.value)}
+                  required
                 />
                 <br />
 
@@ -125,6 +129,7 @@ const CreatePlaylist = ({ editPlaylistData = null, onComplete }) => {
                   className="input"
                   id="imageID"
                   onChange={handleImageChange}
+                  required={!editPlaylistData}
                 />
                 <br />
 
@@ -143,7 +148,7 @@ const CreatePlaylist = ({ editPlaylistData = null, onComplete }) => {
             </div>
           )}
 
-          <div className="playlistSongs">
+          <div className="playlist_song">
             {songs.length > 0 ? (
               songs.map((song) => (
                 <li key={song.id} className="songItem">
@@ -153,18 +158,18 @@ const CreatePlaylist = ({ editPlaylistData = null, onComplete }) => {
                       name="songs"
                       className="checkbox"
                       value={song.id}
-                      checked={selectedSongs.has(song.id)}
-                      onChange={() => handleCheckboxChange(song)}
+                      checked={selectedSongIds.has(song.id)}
+                      onChange={() => handleCheckboxChange(song.id)}
                     />
                     <div className="checkmark"></div>
                   </label>
-                  <div className={`img_play ${selectedSongs.has(song.id) ? 'img_shadow' : ''}`}>
+                  <div className={`img_play ${selectedSongIds.has(song.id) ? 'img_shadow' : ''}`}>
                     <img src={song.imgLink} alt={song.name} />
                   </div>
                   <h5>
                     {song.name}
                     <br />
-                    <div className="subtitle">{song.artist}</div>
+                    <div className="subtitle">{song.artistName}</div>
                   </h5>
                 </li>
               ))
@@ -175,7 +180,7 @@ const CreatePlaylist = ({ editPlaylistData = null, onComplete }) => {
         </form>
       </div>
       <div className="createplaylist">
-        {selectedSongs.size > 0 && <i className="bi bi-folder-plus" onClick={() => setPopUp(true)}></i>}
+        {selectedSongIds.size > 0 && <i className="bi bi-folder-plus" onClick={() => setPopUp(true)}></i>}
       </div>
     </div>
   );

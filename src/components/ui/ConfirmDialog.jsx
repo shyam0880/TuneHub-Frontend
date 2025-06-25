@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
-import AuthContext from '../Context/AuthContext';
-import '../CSS/ConfirmDialog.css';
+import AuthContext from '../../context/AuthContext';
+import '../../styles/ConfirmDialog.css';
 
 const ConfirmDialog = () => {
   const { confirmOpen, confirmMessage, onConfirmAction, cancelConfirmDialog } = useContext(AuthContext);

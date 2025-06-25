@@ -1,27 +1,17 @@
 import { useEffect, useState, useContext } from "react";
-import '../CSS/Artist.css';
-import AuthContext from "../Context/AuthContext";
+import '../../styles/Artist.css';
+import AuthContext from "../../context/AuthContext";
 
 const Artist = () => {
-    const { apiUrl, setAlertData, openConfirmDialog } = useContext(AuthContext);
+    const { apiUrl, setAlertData, openConfirmDialog, artists } = useContext(AuthContext);
 
-    const [artists, setArtists] = useState([]);
+    // const [artists, setArtists] = useState([]);
 
     const [formData, setFormData] = useState({ name: "", image: null });
     const [editingId, setEditingId] = useState(null);
     const [openMenu, setOpenMenu] = useState(null); 
     const [visible, setVisible] = useState(false); 
     const [isLoading, setIsLoading] = useState(false); 
-
-    useEffect(() => {
-        fetchArtists();
-    }, []);
-
-    const fetchArtists = async () => {
-        const res = await fetch(`${apiUrl}/artists`);
-        const data = await res.json();
-        setArtists(data);
-    };
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -43,7 +33,7 @@ const Artist = () => {
         const method = editingId ? "PUT" : "POST";
         const url = editingId ? `${apiUrl}/artists/${editingId}` : `${apiUrl}/artists`;
         try {
-            const response = await fetch(url, { method, body: formDataToSend });
+            const response = await fetch(url, { method, body: formDataToSend, credentials: "include", });
     
             if (!response.ok) {  
                 setAlertData({ show: true, status: false, message: response.statusText });
@@ -79,6 +69,7 @@ const Artist = () => {
         try {
             const response = await fetch(`${apiUrl}/artists/${id}`, {
                 method: "DELETE",
+                credentials: "include",
             });
     
             if (response.ok) {
@@ -133,7 +124,7 @@ const Artist = () => {
 
             <ul className="artist-list">
             <li className="add-item" onClick={()=>handleEdit()}>
-                <i class="bi bi-plus-circle-dotted" ></i>
+                <i className="bi bi-plus-circle-dotted" ></i>
                 Add Artist
             </li>
                 {artists.length > 0 ? (
@@ -141,7 +132,7 @@ const Artist = () => {
                         <li key={artist.id} className="artist-item">
                             <div className="artist-image">
                                 <img src={artist.image} alt={artist.name} />
-                                <button className="play-btn"><i class="bi bi-play-fill"></i></button>
+                                <button className="play-btn"><i className="bi bi-play-fill"></i></button>
                                 <div className="options-container">
                                     <button className="options-btn" 
                                         onClick={(e) => {
@@ -162,7 +153,7 @@ const Artist = () => {
                         </li>
                     ))
                 ) : (
-                    <li className="noArtist"></li>
+                    <li className="noArtist skeleton-card"></li>
                 )}
             </ul>
         </div>

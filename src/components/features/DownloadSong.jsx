@@ -1,7 +1,7 @@
 import React,{useState, useContext} from 'react';
-import "../CSS/DownloadSong.css";
-import DataContext from '../Context/DataContext';
-import AuthContext from '../Context/AuthContext';
+import "../../styles/DownloadSong.css";
+import DataContext from '../../context/DataContext';
+import AuthContext from '../../context/AuthContext';
 
 const DownloadSong = () => {
   const { openConfirmDialog  } = useContext(AuthContext);
@@ -18,7 +18,7 @@ const DownloadSong = () => {
     };
     
       return (
-        <div className="dwnsng">
+        <div className="download-song">
           <h2 className="heading">Downloaded Songs</h2>
           <ul className="song-list">
             {downloadedSong.length > 0 ? (
@@ -30,15 +30,15 @@ const DownloadSong = () => {
                   </div>
                   <div className="song-info">
                     <h5>
-                      {song.name} <br />
-                      <span className="subtitle">{song.artist}</span>
+                      <span>{song.name}</span>
+                      <div className="subtitle">{song.artistName}</div>
                     </h5>
                   </div>
                   <div className="options">
                   <i className={`bi ${currentSong.id === song.id && isPlaying ? "bi-pause-circle-fill" : "bi-play-circle-fill"}`} 
 											onClick={() => handlePlaylistSong(downloadedSong, index)}
 										></i>
-                    <i class="bi bi-x" onClick={()=>handleRemoveSong(song.id)}></i>
+                    <i className="bi bi-x" onClick={()=>handleRemoveSong(song.id)}></i>
                   </div>
                 </li>
               ))

@@ -1,11 +1,12 @@
 import React, {useState, useEffect, useContext} from 'react';
-import  AuthContext  from "../Context/AuthContext";
+import  AuthContext  from "../../context/AuthContext";
 
 
 const Register = () => {
   const { setAlertData, apiUrl} = useContext(AuthContext);
   const [messageStatus,setMessageStatus] = useState(false);
   const [viewPassword, setViewPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [passwordFeedback,setPasswordFeedback] = useState({
     length: false,
     uppercase: false,
@@ -19,7 +20,6 @@ const Register = () => {
     email: '',
     password: '',
     gender: '',
-    role: '',
     address: ''
   });
 
@@ -45,8 +45,9 @@ const Register = () => {
 
   const handleSubmit = async(e) => {
     e.preventDefault();
+    setIsLoading(true);
     try{
-      const response = await fetch(`${apiUrl}/register`, {
+      const response = await fetch(`${apiUrl}/api/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -56,6 +57,7 @@ const Register = () => {
       const textResponse = await response.text();
       if(!response.ok){
         setAlertData({ show: true, status: false, message:textResponse});
+        setIsLoading(false)
         return;
       }
       setAlertData({ show: true, status: true, message:textResponse});
@@ -64,12 +66,14 @@ const Register = () => {
         email: '',
         password: '',
         gender: '',
-        role: '',
         address: ''
       });
     }
     catch(e){
       setAlertData({ show: true, status: false, message: e.message || "Something went wrong!"});
+    }
+    finally{
+      setIsLoading(false)
     }
   }
 
@@ -77,7 +81,7 @@ const Register = () => {
     <div className="container" >
       <div className="form_container">
         <form action="register" className="form" id="login" onSubmit={(e)=>handleSubmit(e)}>
-          <h1 className="form__title">Registration</h1><br/>
+          <h1 className="form__title">Registration</h1>
           <div className="form__input-group">
             <input type="text" 
             name="username" 
@@ -104,7 +108,7 @@ const Register = () => {
             onChange={handleChange}
             placeholder='Enter your password'
             required/> 
-            <i class={viewPassword?"bi bi-eye-slash":"bi bi-eye"} onClick={()=>setViewPassword(!viewPassword)}></i>
+            <i className={viewPassword?"bi bi-eye-slash":"bi bi-eye"} onClick={()=>setViewPassword(!viewPassword)}></i>
           </div>
           {messageStatus && <>
             <p style={{color:passwordFeedback.length?"Green":"red"}}>Minimum 6 characters</p>
@@ -129,20 +133,6 @@ const Register = () => {
              onChange={handleChange}
             />Other
           </div>
-
-          <div className="radio">
-            <label for="role">Role : </label>
-            {/* <input type="radio" name="role" value="admin" id="admin" 
-            checked={user.role === "admin"}
-            onChange={handleChange}
-            />
-            <label for="admin">Admin</label> */}
-            <input type="radio" name="role" value="customer" id="customer"
-            checked={user.role === "customer"}
-            onChange={handleChange}
-            />
-            <label for="customer">User</label>
-          </div>
           <div className="address">
             <label for="username">Address </label>
             <input className="area" name="address"
@@ -151,10 +141,13 @@ const Register = () => {
             ></input>
           </div>
           <div className="signup_btn">
-            <button type="submit" className="form__button">Sign Up</button>
+            <button type="submit" className="form__button" disabled={isLoading}>
+              
+              {isLoading?(<div className="loader" style={{ marginLeft: '8px' }}></div>):("Sign Up")}
+            </button>
           </div>
        </form>
-       <p class="p line">Or With</p>
+       <p className="p line">Or With</p>
 				<div className="flex-row">
 					<button className="btn google">
 						<svg version="1.1" width="20" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512">
