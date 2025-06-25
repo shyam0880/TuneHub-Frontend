@@ -1,5 +1,5 @@
 import React,{useEffect, useState, useContext} from 'react';
-import '../../styles/addsong.css';
+import '../../styles/AddSong.css';
 import AuthContext from '../../context/AuthContext';
 
 const AddMusic = ({ editingSong, setEditingSong, setPopUp }) => {
