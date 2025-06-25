@@ -1,0 +1,151 @@
+.playlistBox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(5px);
+  /* background-color: rgba(0, 0, 0, 0.5); */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.add-to-playlist-popup {
+  width: 100%;
+  max-width: 450px;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.9);
+  position: relative;
+}
+
+.playlistBox .popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Urbanist', sans-serif;
+    font-weight: 600;
+}
+
+.playlistBox .close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.playlistBox .close-btn .bi{
+    font-size: 5px;
+    margin: -10px 0 0 -20px;
+}
+
+.playlistBox .playlist-list {
+  max-height: 250px;
+  overflow-y: auto;
+  margin-top: 15px;
+}
+
+.playlistBox .playlist-item {
+    position: relative;
+    padding-left: 40px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    position: relative;
+
+}
+
+.playlist-item:hover {
+    background-color: #eaeaea40;
+}
+
+.playlist-item input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.playlist-item::before {
+    content: "";
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  border: 2px solid #007bff;
+  border-radius: 50%;
+  background: white;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+.playlist-item::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  background-color: #0800ff;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.playlist-item:has(input[type="radio"]:checked)::after {
+  opacity: 1;
+}
+
+
+.playlistBox .playlist-img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  /* margin: 0 20px; */
+  border-radius: 5px;
+}
+
+.playlistBox .playlist-info {
+  display: flex;
+  flex-direction: column;
+  margin:  0 10px;
+}
+
+.playlistBox .playlist-info strong{
+    font-family: 'Urbanist', sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    letter-spacing: 0.8px;
+}
+
+.playlistBox .status-message {
+  margin-top: 10px;
+  color: #ff3333;
+}
+
+/* Done Button */
+.done-btn {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.done-btn:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.done-btn:disabled {
+  background-color: #a0c4ff;
+  cursor: not-allowed;
+}

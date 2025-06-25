@@ -1,0 +1,152 @@
+.user-list-container {
+    font-family: 'Urbanist', sans-serif;
+    max-width: 98%;
+    margin: 0 auto;
+}
+
+.user-list-container h2 {
+  margin-bottom: 1rem;
+}
+
+.user-list-container .search-input {
+  padding: 10px;
+  width: 300px;
+  max-width: 100%;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  margin-bottom: 20px;
+  font-size: 1rem;
+}
+
+.user-list-container .table-wrapper {
+  overflow-x: auto;
+}
+
+.user-list-container .user-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.user-list-container .user-table th,
+.user-list-container .user-table td {
+    padding: 12px 16px;
+    text-align: center;
+  	font-family: 'Inter', sans-serif;
+	font-size: 16px;
+	font-weight: 400;
+}
+
+.user-list-container .user-table th {
+    background-color: #33333362;
+    font-weight: bold;
+    cursor: pointer;
+    user-select: none;
+  	font-family: 'Inter', sans-serif;
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.user-list-container .user-table tbody tr.even {
+  background-color: #ffffff31;
+}
+
+.user-list-container .user-table tbody tr.odd {
+  background-color: #f9f9f930;
+}
+
+.user-list-container .user-table tbody tr:hover {
+  background-color: #eef2f750;
+}
+
+.user-list-container .avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-list-container .role-tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 25px;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: white;
+}
+
+.user-list-container .role-tag.admin {
+  border: 2px solid #3aff68;
+  color: #3aff68;
+}
+
+.user-list-container .role-tag.customer {
+    border: 2px solid #0ceaf2;
+    color: #0ceaf2;
+}
+
+.user-list-container .no-data {
+  text-align: center;
+  padding: 20px;
+  font-style: italic;
+  color: #777;
+}
+
+@media (max-width: 575px) {
+    .user-list-container .user-table th,
+    .user-list-container .user-table td {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+
+    .user-list-container .role-tag {
+        font-size: 0.7rem;
+    }
+    .user-list-container .avatar {
+        width: 35px;
+        height: 35px;
+    }
+    .user-list-container .user-table th {
+        font-size: 16px;
+    }
+    .user-list-container .user-table tbody tr.even,
+    .user-list-container .user-table tbody tr.odd {
+        font-size: 14px;
+    }
+    .user-list-container .user-table tbody tr:hover {
+        background-color: #eef2f750;
+    }
+    .user-list-container .no-data {
+        font-size: 14px;
+    }
+    .user-list-container h2 {
+        font-size: 1.5rem;
+    }
+    .user-list-container .user-table {
+        font-size: 14px;
+        overflow:auto;
+    }
+}
+
+@media (min-width: 576px) and (max-width:980px){
+
+    .user-list-container .user-table th,
+    .user-list-container .user-table td {
+        padding: 10px 14px;
+        font-size: 15px;
+    }
+
+    .user-list-container .role-tag {
+        font-size: 0.8rem;
+    }
+    .user-list-container .avatar {
+        width: 40px;
+        height: 40px;
+    }
+    .user-list-container .user-table th {
+        font-size: 17px;
+    }
+}

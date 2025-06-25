@@ -4,22 +4,23 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import './App.css';
 
-import { AuthProvider } from "./Context/AuthContext"
-import { DataProvider } from './Context/DataContext';
+import { AuthProvider } from "./context/AuthContext"
+import { DataProvider } from './context/DataContext';
 
-const Home = lazy(() => import('./Pages/Home'));
-const Dashboard = lazy(() => import('./Pages/Dashboard'));
-const Payment = lazy(()=>import('./Payment/Payment'))
-const Playlist = lazy(() => import('./Component/Playlist'));
-const CreatePlaylistWrapper = lazy(() => import('./Component/CreatePlaylistWrapper'));
-const ProtectedRoute = lazy(() => import('./Context/ProtectedRouter'));
-const Artist = lazy(() => import('./Component/Artist'));
-const DownloadSong = lazy(() => import('./Component/DownloadSong'));
-const NotFoundPage = lazy(() => import('./Pages/NotFoundPage'));
+const Home = lazy(() => import('./pages/Home'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Payment = lazy(()=>import('./components/payment/Payment'))
+const Playlist = lazy(() => import('./components/features/Playlist'));
+const CreatePlaylistWrapper = lazy(() => import('./components/forms/CreatePlaylistWrapper'));
+const ProtectedRoute = lazy(() => import('./components/auth/ProtectedRouter'));
+const Artist = lazy(() => import('./components/features/Artist'));
+const DownloadSong = lazy(() => import('./components/features/DownloadSong'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
+const UserList = lazy(() => import('./components/features/UserList'));
 
-import Loading from './Component/Loading';
-import AlertMessage from '../src/Component/AlertMessage';
-import ConfirmDialog from './Component/ConfirmDialog';
+import Loading from './components/ui/Loading';
+import AlertMessage from './components/ui/AlertMessage';
+import ConfirmDialog from './components/ui/ConfirmDialog';
 
 
 function App() {
@@ -55,6 +56,10 @@ function App() {
 					{
 						path: "downloaded",
 						element: <DownloadSong />,
+					},
+					{
+						path: "user-list",
+						element: <Suspense fallback={<Loading />}><UserList /></Suspense>,
 					},
 				]
 			},

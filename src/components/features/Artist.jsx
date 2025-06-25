@@ -1,9 +1,11 @@
 import { useEffect, useState, useContext } from "react";
+import { Navigate } from "react-router-dom";
 import '../../styles/Artist.css';
 import AuthContext from "../../context/AuthContext";
+import Loading from "../ui/Loading";
 
 const Artist = () => {
-    const { apiUrl, setAlertData, openConfirmDialog, artists } = useContext(AuthContext);
+    const { apiUrl, setAlertData, openConfirmDialog, artists, contextUser } = useContext(AuthContext);
 
     // const [artists, setArtists] = useState([]);
 
@@ -101,6 +103,14 @@ const Artist = () => {
     const handleDeleteArtist = (id) => {
 		openConfirmDialog("Are you sure you want to delete this artist?", () => handleDelete(id));
 	};
+
+    if (contextUser.role === "USER" ) {
+      return <Navigate to="/dashboard" replace />;
+    }
+      
+    if (contextUser === undefined) {
+        return <Loading />;
+    }
 
     return (
         <div className='artist'>
