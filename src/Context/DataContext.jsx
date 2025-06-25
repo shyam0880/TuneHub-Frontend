@@ -1,12 +1,11 @@
 import { createContext, useState, useEffect, useMemo, useContext,useRef } from 'react';
-import AuthContext from '../Context/AuthContext';
+import AuthContext from './AuthContext';
 
 const DataContext = createContext();
 
 export const DataProvider = ({ children }) => {
     const { addToRecent } = useContext(AuthContext);
 
-    
     const [currentSong, setCurrentSong] = useState({
         id: 0,
         artist: "Tunehub",
@@ -23,17 +22,6 @@ export const DataProvider = ({ children }) => {
     const [currentIndex, setCurrentIndex] = useState(-1);
     const [downloadedSong,setDownloadedSong]=useState([]);
     const [isDownloadLoaded, setIsDownloadLoaded] = useState(false);
-
-
-    useEffect(() => {
-        const stored = JSON.parse(localStorage.getItem('currentsong'));
-        if (stored) setCurrentSong(stored);
-    }, []);
-
-    useEffect(() => {
-        localStorage.setItem("currentsong", JSON.stringify(currentSong));
-    }
-    , [currentSong]);
 
     const togglePlay = () => {
 		if (isPlaying) {
