@@ -4,8 +4,8 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import './App.css';
 
-import { AuthProvider } from "./context/AuthContext";
-import { DataProvider } from './context/DataContext';
+import { AuthProvider } from './context/AuthContext.jsx';
+import { DataProvider } from './context/DataContext.jsx';
 
 const Home = lazy(() => import('./pages/Home'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
