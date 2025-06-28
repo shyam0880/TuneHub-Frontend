@@ -51,7 +51,7 @@ const Playlist = ({ currSong, onSongSelect, checkPlay, setAlertData }) => {
   useEffect(() => {
     if (contextUser.role === 'ADMIN') {
       fetchAdminPlaylists();
-      fetchUsers();
+      // fetchUsers();
       setTitleStatus(0);
     } else {
       fetchUserPlaylists(contextUser.id);
@@ -183,7 +183,7 @@ const Playlist = ({ currSong, onSongSelect, checkPlay, setAlertData }) => {
           </div>
         </div>
 
-        <div className="selectUser">
+        <div className="selectUser" onClick={()=> fetchUsers()}>
           <label className={titleStatus === 0 ? 'active' : ''} style={{ marginRight: '10px', color: '#ccc', cursor: 'pointer' }} onClick={() => { fetchAdminPlaylists(), setTitleStatus(0) }}>All</label>
           {contextUser.role === 'ADMIN'? (
             <>

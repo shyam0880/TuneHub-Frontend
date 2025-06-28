@@ -82,7 +82,7 @@ const AddMusic = ({ editingSong, setEditingSong, setPopUp }) => {
   return (
     <form onSubmit={handleSubmit} className="song_form">
     <h3>{editingSong ? 'Edit Song' : 'Add Song'}</h3>
-
+    <button style={{position: 'absolute', top: '2%', right: '2%'}} className="close-btn" onClick={() => setPopUp(false)}><i className="bi bi-x-lg" style={{marginLeft: '-200%', fontSize: '20px'}}></i></button>
     <div className="form-group">
       <label>Song name:</label>
       <input type="text" name="name" value={song.name} onChange={handleChange} required />

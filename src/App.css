@@ -300,14 +300,14 @@ border: 1px solid #2d79f3;
 
 /* popup add */
 
-.app-layout .popup{
+.popup{
 	height: 100vh;
 	width: 100vw;
 	top: 0;
 	left:0;
 	position: fixed;
 	backdrop-filter: blur(5px);
-	z-index: 9;
+	z-index: 9999;
 	color: white;
 	width: 100%;
 	top:50%;
@@ -316,7 +316,7 @@ border: 1px solid #2d79f3;
 }
 
 
-  .app-layout .popup .contant .bi{
+.popup .contant .bi{
 	position: relative;
 	left: 97%;
 	font-size: 30px;
@@ -326,7 +326,7 @@ border: 1px solid #2d79f3;
 	transition: .3 linear;
   }
 
-  .app-layout .popup .contant .bi:hover{
+.popup .contant .bi:hover{
 	color: #fff;
   }
 
@@ -2254,7 +2254,6 @@ border: 1px solid #2d79f3;
 	.app-layout .main-content .section-song .playlist_song li{
 		width: 97%;
 		height: 100px;
-		border: 2px solid white;
 	}
 
 	.app-layout .main-content .playbox .inputdata {

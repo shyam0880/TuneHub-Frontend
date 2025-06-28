@@ -91,7 +91,8 @@ export default function UserList() {
                 <tr key={user.id} className={index % 2 === 0 ? 'even' : 'odd'}>
                   <td>
                     <img
-                      src={user.image || `https://ui-avatars.com/api/?name=${user.username}`}
+                      // src={user.image || `https://ui-avatars.com/api/?name=${user.username}`}
+                      src={user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.username)}&background=random&rounded=true`}
                       alt={user.username}
                       className="avatar"
                     />

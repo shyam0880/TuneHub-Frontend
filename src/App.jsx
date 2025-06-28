@@ -21,6 +21,7 @@ const UserList = lazy(() => import('./components/features/UserList'));
 import Loading from './components/ui/Loading';
 import AlertMessage from './components/ui/AlertMessage';
 import ConfirmDialog from './components/ui/ConfirmDialog';
+import ArtistMusicWrapper from './components/forms/ArtistMusicWrapper.jsx';
 
 
 function App() {
@@ -39,28 +40,32 @@ function App() {
 				children: [
 					{
 						path: "playlist",
-						element: <Playlist />,
+						element: <Suspense fallback={<Loading />}> <Playlist /></Suspense>,
 					},
 					{
 						path: "payment",
-						element: <Payment />,
+						element: <Suspense fallback={<Loading />}><Payment /></Suspense>,
 					},
 					{
 						path: "create-playlist",  
-						element: <CreatePlaylistWrapper />,
+						element: <Suspense fallback={<Loading />}><CreatePlaylistWrapper /></Suspense>,
 					},
 					{
 						path: "artist",
-						element: <Artist />,
+						element: <Suspense fallback={<Loading />}><Artist /></Suspense>,
 					},
 					{
-						path: "downloaded",
-						element: <DownloadSong />,
+						path: "downloaded", 
+						element: <Suspense fallback={<Loading />}><DownloadSong /></Suspense>,
 					},
 					{
 						path: "user-list",
 						element: <Suspense fallback={<Loading />}><UserList /></Suspense>,
 					},
+					{
+						path:"songs",
+						element: <Suspense fallback={<Loading />}><ArtistMusicWrapper /></Suspense>,
+					}
 				]
 			},
 			

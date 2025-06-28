@@ -59,8 +59,7 @@ const AuthProvider = ({ children }) => {
           localStorage.setItem("userdata", JSON.stringify(updatedUser));
 
           if (updatedUser.premium || updatedUser.role === "ADMIN") {
-            fetchSongs();
-            fetchArtists();
+            setTimeout(() => fetchDashboardDetails(), 2000);
           }
         } else if ([401, 403].includes(response.status)) {
           logout();
@@ -107,7 +106,6 @@ const AuthProvider = ({ children }) => {
   const login = (userData) => {
     localStorage.setItem('userdata', JSON.stringify(userData));
     setContextUser(userData);
-    window.location.reload();
   };
 
   const logout = () => {
@@ -159,39 +157,54 @@ const AuthProvider = ({ children }) => {
     setConfirmOpen(false);
   };
 
-  const fetchSongs = async () => {
-    try {
-      const response = await fetch(`${apiUrl}/api/songs`, {
+
+  const fetchDashboardDetails = async() =>{
+    try{
+       const response = await fetch(`${apiUrl}/api/songs/data`, {
         credentials: "include",
       });
       if (!response.ok) throw new Error("Network response was not ok");
       const data = await response.json();
-      setSongs(handleShuffle(data));
-      setLoading(false);
+      setSongs(handleShuffle(data.songs));
+      setArtists(data.artists)
       setAttempts(0);
+      setLoading(false);
     } catch (err) {
       console.error("Error fetching songs:", err);
       setAttempts(prev => prev + 1);
     }
-  };
+  }
 
   const fetchArtists = async () => {
-    try {
-      const response = await fetch(`${apiUrl}/artists`, {
-        credentials: "include",
-      });
-      if (!response.ok) throw new Error("Failed to fetch artists");
-      const data = await response.json();
-      setArtists(data);
-    } catch (err) {
-      setAlertData({ show: true, status: false, message: "Error fetching artists" });
-    }
+      try {
+          const response = await fetch(`${apiUrl}/artists`, {
+          credentials: "include",
+          });
+          if (!response.ok) throw new Error("Failed to fetch artists");
+          const data = await response.json();
+          setArtists(data);
+      } catch (err) {
+          setAlertData({ show: true, status: false, message: "Error fetching artists" });
+      }
   };
+
+  const fetchSongs = async () => {
+    try {
+          const response = await fetch(`${apiUrl}/api/songs`, {
+          credentials: 'include',
+          });
+          if (!response.ok) throw new Error('Network response was not ok');
+          const data = await response.json();
+          setSongs(handleShuffle(data));
+      } catch (err) {
+          console.error('Error fetching songs:', err);
+      }
+    };
 
   useEffect(() => {
     if (loading) {
       const interval = setInterval(() => {
-        fetchSongs();
+        fetchDashboardDetails();
       }, 5000);
       return () => clearInterval(interval);
     }
@@ -215,7 +228,7 @@ const AuthProvider = ({ children }) => {
       login,
       logout,
       greeting: getGreeting(),
-      fetchSongs,
+      fetchDashboardDetails,
       alertData,
       setAlertData,
       openConfirmDialog,
@@ -225,7 +238,9 @@ const AuthProvider = ({ children }) => {
       onConfirmAction,
       apiUrl,
       removeFromRecent,
-      artists
+      artists,
+      fetchArtists,
+      fetchSongs
     }}>
       {children}
     </AuthContext.Provider>

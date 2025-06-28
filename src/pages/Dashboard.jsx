@@ -2,14 +2,14 @@ import React ,{ useRef, useState, useContext, useEffect, useMemo }from 'react';
 import AuthContext from '../context/AuthContext';
 import DataContext from '../context/DataContext';
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import AddMusic from '../components/forms/AddMusic';
 import Playlist from '../components/features/Playlist';
 import ProfileCard from '../components/ui/ProfileCard';
+import AddMusic from '../components/forms/AddMusic';
 import AddSongToPlaylist from '../components/forms/AddSongToPlaylist';
 
 
 const Dashboard = () => {
-	const { songs, setSongs, contextUser, addToRecent, recentSong ,greeting, logout, setAlertData, openConfirmDialog, apiUrl, removeFromRecent, artists } = useContext(AuthContext);
+	const { songs, setSongs, contextUser, addToRecent, recentSong ,greeting, setAlertData, openConfirmDialog, apiUrl, removeFromRecent, artists, fetchArtists } = useContext(AuthContext);
 	const {
 		currentSong,
 		setCurrentSong,
@@ -299,6 +299,10 @@ const Dashboard = () => {
 		setPopupOpen(true);    
 	};
 
+	const handleArtistSongs = (artistDetails) => {
+        navigate('/dashboard/songs', { state: { artistDetails } });
+    };
+
 
 	// const likeSong = songs.filter((song) => song.likeSong === true);
 	const handleDeleteClick = (id) => {
@@ -343,7 +347,13 @@ const Dashboard = () => {
 			{contextUser?.role == "ADMIN"&&(
 			<div className="navbar__link">
 				<h4 onClick={() => navigate("/dashboard/user-list")}><i className={`bi bi-person-circle ${(location.pathname==="/dashboard/user-list")?"active":""}`}></i></h4>
-				<span>User List</span>
+				<span>Users</span>
+			</div>
+			)}
+			{contextUser?.role == "ADMIN"&&(
+			<div className="navbar__link">
+				<h4 onClick={() => navigate("/dashboard/songs")}><i className={`bi bi-file-music ${(location.pathname==="/dashboard/songs")?"active":""}`}></i></h4>
+				<span>Songs</span>
 			</div>
 			)}
 		</div>
@@ -354,25 +364,27 @@ const Dashboard = () => {
 			<h4 className={(home===1 && !isChildRouteActive)?"active":""} onClick={()=>{handleHome(1)}}> My Library</h4>
 
 			<br/>
+			{contextUser?.role == "ADMIN"&&(
+			<h4 className={(location.pathname==="/dashboard/artist")?"active":""} onClick={() => navigate("/dashboard/artist")}>Artist</h4>
+			)}
+			{contextUser?.role == "ADMIN"&&(
+			<h4 className={(location.pathname==="/dashboard/user-list")?"active":""} onClick={() => navigate("/dashboard/user-list")}>Users</h4>
+			)}
+			{contextUser?.role == "ADMIN"&&(
+			<h4 className={(location.pathname==="/dashboard/songs")?"active":""} onClick={() => navigate("/dashboard/songs")}>Songs</h4>
+			)}
 			<h4 className={(location.pathname==="/dashboard/downloaded")?"active":""} onClick={() => navigate("/dashboard/downloaded")}> Downloaded Song</h4>
 			<h4> Recommendation</h4>
 			{(!contextUser.premium && contextUser?.role !== "ADMIN") && (
 			<h4 className={(location.pathname==="/dashboard/payment")?"active":""} onClick={() => navigate("/dashboard/payment")}>Upgrade to Premium</h4>
 			)}
-			{contextUser?.role == "ADMIN"&&(
-			<h4 className={(location.pathname==="/dashboard/artist")?"active":""} onClick={() => navigate("/dashboard/artist")}>Artist</h4>
-			)}
-			{contextUser?.role == "ADMIN"&&(
-			<h4 className={(location.pathname==="/dashboard/user-list")?"active":""} onClick={() => navigate("/dashboard/user-list")}>User List</h4>
-			)}
 			{/* <h5 onClick={()=>handleLogout()}>Logout <i className="bi bi-box-arrow-right" ></i></h5> */}
 		</nav>
 	</div>
+
     {popUp&&(
 	<div className="popup" >
         <div className="contant">
-        <i className="bi bi-x-lg" onClick={()=>{setPopUp(false)}}></i>
-		
 			<AddMusic
 				editingSong={editingSong}
 				setEditingSong={setEditingSong}
@@ -384,15 +396,10 @@ const Dashboard = () => {
 	{popupOpen && (
 	<div className="popup">
 		<div className="contant">
-			{/* <i className="bi bi-x-lg" onClick={() =>{ setPopupOpen(false), setAddSongId(null)}}></i> */}
 			<AddSongToPlaylist songId={addsongId} setPopUp={setPopupOpen} />
 		</div>
 	</div>
 	)}
-
-
-	
-
 
 	{(contextUser.premium || contextUser.role === "ADMIN")&&(search.trim() !== "" && (
 		<div className="song-search-result">
@@ -450,8 +457,8 @@ const Dashboard = () => {
 							}
 				</span>
 			</div>
-			<div className="user-profile">
-				<img src={contextUser.image} alt="" onClick={()=>setProfileUpdate(!profileUpdate)}/>
+			<div className="user-profile" style={{cursor: 'pointer'}}>
+				<img src={contextUser.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(contextUser.username)}&background=random&rounded=true`} alt="" onClick={()=>setProfileUpdate(!profileUpdate)}/>
 				{profileUpdate&&(<ProfileCard contextUser={contextUser}/>)}
 			</div>
 		</div>
@@ -530,11 +537,11 @@ const Dashboard = () => {
 							</div>
 						</div>
 						<div className="song-scroll-container" ref={popSongRef1} >
-							{contextUser?.role === "ADMIN" &&(
+							{/* {contextUser?.role === "ADMIN" &&(
 								<li className="addSong" onClick={()=>{setPopUp(true); setEditingSong(null); }}>
 									<i className="bi bi-plus-circle"></i>
 								</li>
-							)}
+							)} */}
 							{songs.length>0?(
 							songs.map((song,index) => (
 									<li key={song.id} className="songItem song-appear">
@@ -559,9 +566,9 @@ const Dashboard = () => {
 												<>
 												<button className="testButton" onClick={() => handleDeleteClick(song.id)}>Delete</button>
 												<button className="testButton" onClick={() => handleEdit(song)}>Edit</button>
-												<button className="testButton" onClick={() => handleAddSongToPlaylist(song.id)}>Playlist +</button>
 												</>
 											)}
+											<button className="testButton" onClick={() => handleAddSongToPlaylist(song.id)}>Playlist +</button>
 											<button className="testButton" onClick={() => handleDownload(song)}>Download</button>
 									  	</div>
 									)}
@@ -576,6 +583,7 @@ const Dashboard = () => {
 									<li className="noSong skeleton-card" ></li>
 									<li className="noSong skeleton-card" style={{opacity:0.6}} ></li>
 									<li className="noSong skeleton-card" style={{opacity:0.4}} ></li>
+									<li className="noSong skeleton-card" style={{opacity:0.2}} ></li>
 								</>
 								)
 							}
@@ -596,7 +604,7 @@ const Dashboard = () => {
 									<li key={artist.id} className="artist-item song-appear">
 										<div className="artist-image">
 											<img src={artist.image} alt={artist.name} loading="lazy" />
-											<button className="play-btn"><i className="bi bi-play-fill"></i></button>
+											<button className="play-btn" onClick={()=>handleArtistSongs(artist)}><i className="bi bi-play-fill"></i></button>
 											{contextUser?.role == "ADMIN"&&(<div className="options-container">
 												<button className="options-btn" 
 													onClick={(e) => {

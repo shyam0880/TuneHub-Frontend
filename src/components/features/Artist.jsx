@@ -1,13 +1,12 @@
 import { useEffect, useState, useContext } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import '../../styles/Artist.css';
 import AuthContext from "../../context/AuthContext";
 import Loading from "../ui/Loading";
 
 const Artist = () => {
-    const { apiUrl, setAlertData, openConfirmDialog, artists, contextUser } = useContext(AuthContext);
-
-    // const [artists, setArtists] = useState([]);
+    const { apiUrl, setAlertData, openConfirmDialog, contextUser, artists, fetchArtists } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     const [formData, setFormData] = useState({ name: "", image: null });
     const [editingId, setEditingId] = useState(null);
@@ -75,17 +74,22 @@ const Artist = () => {
             });
     
             if (response.ok) {
-                setAlertData({ show: true, status: true, message: "Artist deleted successfully" });
+                const message = response.text();
+                setAlertData({ show: true, status: true, message: message });
                 fetchArtists(); 
             } else {
-                const errorData = await response.json();
-                setAlertData({ show: true, status: false, message: errorData.message || "Unknown error" });
+                const errorData = await response.text();
+                setAlertData({ show: true, status: false, message: errorData || "Unknown error" });
             }
         } catch (error) {
             setAlertData({ show: true, status: false, message: error.message });
         }
     
         setOpenMenu(null);
+    };
+
+    const handleArtistSongs = (artistDetails) => {
+        navigate('/dashboard/songs', { state: { artistDetails } });
     };
     
 
@@ -142,7 +146,7 @@ const Artist = () => {
                         <li key={artist.id} className="artist-item">
                             <div className="artist-image">
                                 <img src={artist.image} alt={artist.name} />
-                                <button className="play-btn"><i className="bi bi-play-fill"></i></button>
+                                <button className="play-btn" onClick={()=>handleArtistSongs(artist)}><i className="bi bi-play-fill"></i></button>
                                 <div className="options-container">
                                     <button className="options-btn" 
                                         onClick={(e) => {

@@ -10,11 +10,16 @@ const AddSongToPlaylist = ({ songId, setPopUp }) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    if (!contextUser) return;
     const fetchPlaylists = async () => {
       try {
-        const response = await fetch(`${apiUrl}/api/playlists/user/${contextUser.id}`, {
+        const endpoint = contextUser.role === 'ADMIN'
+        ? `${apiUrl}/api/playlists/admin`
+        : `${apiUrl}/api/playlists/user/${contextUser.id}`;
+
+        const response = await fetch(endpoint, {
           method: 'GET',
-          credentials: "include",
+          credentials: 'include',
         });
         if (!response.ok) setAlertData({show: true, status: false, message:'Failed to fetch playlists'});
         const data = await response.json();
@@ -68,7 +73,8 @@ const AddSongToPlaylist = ({ songId, setPopUp }) => {
         </div>
 
         <div className="playlist-list">
-          {playlists.map((playlist) => (
+          {playlists.length>0?
+          (playlists.map((playlist) => (
             <label key={playlist.id} className="playlist-item">
               <input
                 type="radio"
@@ -83,7 +89,9 @@ const AddSongToPlaylist = ({ songId, setPopUp }) => {
                 <span>{playlist.type}</span>
               </div>
             </label>
-          ))}
+          ))):(
+            <label className="playlist-item" ><strong style={{margin: '20px 0'}}>Playlist Not Found</strong></label>
+          )}
         </div>
 
         <button className="done-btn" onClick={handleAddSong} disabled={loading}>

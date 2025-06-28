@@ -85,14 +85,7 @@ const ProfileCard = ({ contextUser}) => {
     <div className="profile-container">
       <div className="profile-card">
         <figure className="profile-icon">
-          {contextUser.image ? (
-            <img src={contextUser.image} alt="Profile" className="profile-image" />
-          ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor"
-              className="bi bi-person-fill" viewBox="0 0 16 16">
-              <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
-            </svg>
-          )}
+            <img src={contextUser.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(contextUser.username)}&background=random&rounded=true`} alt={contextUser.username} className="avatar" />
         </figure>
         <h2 className="profile-name">{contextUser.username}</h2>
         <p className="profile-role">{contextUser.email}</p>
